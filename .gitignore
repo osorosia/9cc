@@ -1,7 +1,10 @@
 **/.devcontainer/
+**/.ssh/
+**/.vscode*/
 
 **/.bash_history
 **/.viminfo
+**/.gitconfig
 
 **/9cc
 **/tmp*
