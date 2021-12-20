@@ -1,3 +1,8 @@
-.bash_history
-.viminfy
+**/.devcontainer/
 
+**/.bash_history
+**/.viminfy
+
+**/9cc
+**/tmp
+**/tmp.s
