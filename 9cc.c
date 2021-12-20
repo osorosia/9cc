@@ -89,7 +89,7 @@ t_Token	*tokenize(char *p)
 
 bool	at_eof(void)
 {
-	return (g_token->kind != TK_EOF);
+	return (g_token->kind == TK_EOF);
 }
 
 bool	consume(char op)
