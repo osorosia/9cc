@@ -5,7 +5,7 @@ all: $(NAME)
 $(NAME): 9cc.c
 
 test: $(NAME)
-	./test.sh
+	bash test.sh
 
 clean:
 	rm -f $(NAME) *.o *~ tmp*
