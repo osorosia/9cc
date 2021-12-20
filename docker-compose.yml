@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  cc:
+    build: .
+    volumes:
+      - .:/home/user
+    tty: true
+    working_dir: /home/user
