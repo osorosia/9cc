@@ -1,4 +1,5 @@
-NAME = 9cc
+NAME	= 9cc
+CFLAGS	= -std=c11 -g -static
 
 all: $(NAME)
 $(NAME): 9cc.c
