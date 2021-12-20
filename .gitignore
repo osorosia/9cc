@@ -4,5 +4,7 @@
 **/.viminfy
 
 **/9cc
-**/tmp
-**/tmp.s
+**/tmp*
+**/*~
+**/a.out
+**/*.o
