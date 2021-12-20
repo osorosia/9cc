@@ -23,6 +23,22 @@ struct s_Token
 };
 
 t_Token	*g_token;
+char	*user_input;
+
+void	error_at(char *loc, char *fmt, ...)
+{
+	va_list	ap;
+	int		pos;
+
+	pos = loc - user_input;
+	va_start(ap, fmt);
+	fprintf(stderr, "%s\n", user_input);
+	fprintf(stderr, "%*s", pos, " ");
+	fprintf(stderr, "^ ");
+	vfprintf(stderr, fmt, ap);
+	fprintf(stderr, "\n");
+	exit(1);
+}
 
 void	error(const char *fmt, ...)
 {
@@ -39,7 +55,7 @@ int	expect_number(void)
 	int	val;
 
 	if (g_token->kind != TK_NUM)
-		error("Not numeric!");
+		error_at(g_token->str, "Not numeric!");
 	val = g_token->val;
 	g_token = g_token->next;
 	return (val);
@@ -56,13 +72,15 @@ t_Token	*new_token(t_TokenKind kind, t_Token *cur, char *str)
 	return (next);
 }
 
-t_Token	*tokenize(char *p)
+t_Token	*tokenize(void)
 {
 	t_Token	head;
 	t_Token	*cur; 
+	char	*p;
 
 	head.next = NULL;
 	cur = &head;
+	p = user_input;
 	while (*p)
 	{
 		if (isspace(*p))
@@ -81,7 +99,7 @@ t_Token	*tokenize(char *p)
 			cur->val = strtol(p, &p, 10);
 			continue ;
 		}
-		error("Invalid Token!");
+		error_at(p, "Invalid Token!");
 	}
 	new_token(TK_EOF, cur, p);
 	return (head.next);
@@ -103,7 +121,7 @@ bool	consume(char op)
 void	expect(char op)
 {
 	if (g_token->kind != TK_RESERVED || g_token->str[0] != op)
-		error("%c is Not %c!", g_token->str[0], op);
+		error_at(g_token->str, "expected '%c'!", op);
 	g_token = g_token->next;
 }
 
@@ -112,7 +130,8 @@ int main(int argc, char **argv)
 	if (argc != 2)
 		error("Invalid argument!");
 
-	g_token = tokenize(argv[1]);
+	user_input = argv[1];
+	g_token = tokenize();
 	printf(".intel_syntax noprefix\n");
 	printf(".globl main\n");
 	printf("main:\n");
