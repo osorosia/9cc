@@ -1,8 +1,17 @@
-all:
+NAME = 9cc
 
-# guest
+all: $(NAME)
+$(NAME): 9cc.c
 
-# host
+test: $(NAME)
+	./test.sh
+
+clean:
+	rm -f $(NAME) *.o *~ tmp*
+
+.PHONY: test clean
+
+# host---------------
 up:
 	@docker-compose up -d
 	@docker-compose exec cc bash
@@ -10,4 +19,4 @@ up:
 down:
 	@docker-compose down
 
-
+.PHONY: up down
