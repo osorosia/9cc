@@ -88,7 +88,7 @@ t_Token	*tokenize(void)
 			p++;
 			continue ;
 		}
-		if (*p == '+' || *p == '-')
+		if (strchr("+-*/()", *p))
 		{
 			cur = new_token(TK_RESERVED, cur, p++);
 			continue ;
@@ -125,13 +125,95 @@ void	expect(char op)
 	g_token = g_token->next;
 }
 
+typedef	enum
+{
+	ND_ADD,
+	ND_SUB,
+	ND_MUL,
+	ND_DIV,
+	ND_NUM,
+}	t_NodeKind;
+
+typedef struct s_Node	t_Node;
+
+struct	s_Node
+{
+	t_NodeKind	kind;
+	t_Node		*lhs;
+	t_Node		*rhs;
+	int			val;
+};
+
+t_Node	*new_node(t_NodeKind	kind, t_Node *lhs, t_Node *rhs)
+{
+	t_Node	*node;
+
+	node = calloc(1, sizeof(t_Node));
+	node->kind = kind;
+	node->lhs = lhs;
+	node->rhs = rhs;
+	return (node);
+}
+
+t_Node	*new_node_num(int val)
+{
+	t_Node	*node;
+
+	node = new_node(ND_NUM, NULL, NULL);
+	node->val = val;
+	return (node);
+}
+
+t_Node	*expr();
+t_Node	*mul();
+t_Node	*primary();
+
+t_Node	*expr()
+{
+	t_Node	*node;
+
+	node = mul();
+	if (consume('+'))
+		node = new_node(ND_ADD, node, mul());
+	if (consume('-'))
+		node = new_node(ND_SUB, node, mul());
+	return (node);
+}
+
+t_Node	*mul()
+{
+	t_Node	*node;
+
+	node = primary();
+	if (consume('*'))
+		node = new_node(ND_MUL, node, primary());
+	if (consume('/'))
+		node = new_node(ND_DIV, node, primary());
+	return (node);
+}
+
+t_Node	*primary()
+{
+	t_Node	*node;
+
+	if (consume('('))
+	{
+		node = expr();
+		expect(')');
+		return (node);
+	}
+	return (new_node_num(expect_number()));
+}
+
 int main(int argc, char **argv)
 {
+	t_Node	*node;
 	if (argc != 2)
 		error("Invalid argument!");
 
 	user_input = argv[1];
 	g_token = tokenize();
+	node = expr();
 	printf(".intel_syntax noprefix\n");
 	printf(".globl main\n");
 	printf("main:\n");
