@@ -20,6 +20,7 @@ struct s_Token
 	t_Token		*next;
 	int		val;
 	char		*str;
+	int		len;
 };
 
 t_Token	*g_token;
@@ -61,15 +62,21 @@ int	expect_number(void)
 	return (val);
 }
 
-t_Token	*new_token(t_TokenKind kind, t_Token *cur, char *str)
+t_Token	*new_token(t_TokenKind kind, t_Token *cur, char *str, int len)
 {
 	t_Token	*next;
 
 	next = (t_Token *)calloc(1, sizeof(t_Token));
 	next->kind = kind;
 	next->str = str;
+	next->len = len;
 	cur->next = next;
 	return (next);
+}
+
+bool	startswith(char *p, char *q)
+{
+	return (memcmp(p, q, strlen(q)) == 0);
 }
 
 t_Token	*tokenize(void)
@@ -77,6 +84,7 @@ t_Token	*tokenize(void)
 	t_Token	head;
 	t_Token	*cur; 
 	char	*p;
+	char	*q;
 
 	head.next = NULL;
 	cur = &head;
@@ -88,20 +96,28 @@ t_Token	*tokenize(void)
 			p++;
 			continue ;
 		}
-		if (strchr("+-*/()", *p))
+		if (startswith(p, "==") || startswith(p, "!=") 
+				|| startswith(p, "<=") || startswith(p, ">="))
 		{
-			cur = new_token(TK_RESERVED, cur, p++);
+			cur = new_token(TK_RESERVED, cur, p, 2);
+			continue ;
+		}
+		if (strchr("+-*/()<>", *p))
+		{
+			cur = new_token(TK_RESERVED, cur, p++, 1);
 			continue ;
 		}
 		if (isdigit(*p))
 		{
-			cur = new_token(TK_NUM, cur, p);
+			cur = new_token(TK_NUM, cur, p, 0);
+			q = p;
 			cur->val = strtol(p, &p, 10);
+			cur->len = p - q;
 			continue ;
 		}
 		error_at(p, "Invalid Token!");
 	}
-	new_token(TK_EOF, cur, p);
+	new_token(TK_EOF, cur, p, 0);
 	return (head.next);
 }
 
@@ -131,6 +147,10 @@ typedef	enum
 	ND_SUB,
 	ND_MUL,
 	ND_DIV,
+	// ND_EQ,
+	// ND_NE,
+	// ND_LT,
+	// ND_LE,
 	ND_NUM,
 }	t_NodeKind;
 
@@ -273,5 +293,3 @@ int main(int argc, char **argv)
 	printf("\tret\n");
 	return (0);
 }
-
-
