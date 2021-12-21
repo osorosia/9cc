@@ -1,6 +1,7 @@
 **/.devcontainer/
 **/.ssh/
 **/.vscode*/
+**/.cache/
 
 **/.bash_history
 **/.viminfo
