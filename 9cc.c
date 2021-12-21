@@ -166,6 +166,7 @@ t_Node	*new_node_num(int val)
 
 t_Node	*expr();
 t_Node	*mul();
+t_Node	*unary();
 t_Node	*primary();
 
 t_Node	*expr()
@@ -188,17 +189,28 @@ t_Node	*mul()
 {
 	t_Node	*node;
 
-	node = primary();
+	node = unary();
 	for (;;)
 	{
 		if (consume('*'))
-			node = new_node(ND_MUL, node, primary());
+			node = new_node(ND_MUL, node, unary());
 		else if (consume('/'))
-			node = new_node(ND_DIV, node, primary());
+			node = new_node(ND_DIV, node, unary());
 		else
 			return (node);
 
 	}
+}
+
+t_Node	*unary()
+{
+	t_Node	*node;
+
+	if (consume('+'))
+		return (unary());
+	if (consume('-'))
+		return (new_node(ND_SUB, new_node_num(0), unary()));
+	return (primary());
 }
 
 t_Node	*primary()
