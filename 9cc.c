@@ -126,17 +126,21 @@ bool	at_eof(void)
 	return (g_token->kind == TK_EOF);
 }
 
-bool	consume(char op)
+bool	consume(char *op)
 {
-	if (g_token->kind != TK_RESERVED || g_token->str[0] != op)
+	if (g_token->kind != TK_RESERVED
+		|| g_token->len != strlen(op)
+		|| memcmp(g_token->str, op, g_token->len))
 		return (false);
 	g_token = g_token->next;
 	return (true);
 }
 
-void	expect(char op)
+void	expect(char *op)
 {
-	if (g_token->kind != TK_RESERVED || g_token->str[0] != op)
+	if (g_token->kind != TK_RESERVED
+		|| g_token->len != strlen(op)
+		|| memcmp(g_token->str, op, g_token->len))
 		error_at(g_token->str, "expected '%c'!", op);
 	g_token = g_token->next;
 }
@@ -147,10 +151,10 @@ typedef	enum
 	ND_SUB,
 	ND_MUL,
 	ND_DIV,
-	// ND_EQ,
-	// ND_NE,
-	// ND_LT,
-	// ND_LE,
+	ND_EQ,
+	ND_NE,
+	ND_LT,
+	ND_LE,
 	ND_NUM,
 }	t_NodeKind;
 
@@ -185,6 +189,9 @@ t_Node	*new_node_num(int val)
 }
 
 t_Node	*expr();
+t_Node	*equality();
+t_Node	*relational();
+t_Node	*add();
 t_Node	*mul();
 t_Node	*unary();
 t_Node	*primary();
@@ -196,14 +203,48 @@ t_Node	*expr()
 	node = mul();
 	for (;;)
 	{
-		if (consume('+'))
+		if (consume("+"))
 			node = new_node(ND_ADD, node, mul());
-		else if (consume('-'))
+		else if (consume("-"))
 			node = new_node(ND_SUB, node, mul());
 		else
 			return (node);
 	}
 }
+
+// t_Node *equality()
+// {
+// 	t_Node	*node;
+// 	return (node);
+// }
+
+// t_Node *relational()
+// {
+// 	t_Node	*node;
+
+// 	node = add();
+// 	for (;;)
+// 	{
+// 		if (consume())
+// 	}
+// 	return (node);
+// }
+
+// t_Node	*add()
+// {
+// 	t_Node	*node;
+
+// 	node = mul();
+// 	for (;;)
+// 	{
+// 		if (consume("+"))
+// 			node = new_node(ND_ADD, node, mul());
+// 		else if (consume("-"))
+// 			node = new_node(ND_SUB, node, mul());
+// 		else
+// 			return (node);
+// 	}
+// }
 
 t_Node	*mul()
 {
@@ -212,9 +253,9 @@ t_Node	*mul()
 	node = unary();
 	for (;;)
 	{
-		if (consume('*'))
+		if (consume("*"))
 			node = new_node(ND_MUL, node, unary());
-		else if (consume('/'))
+		else if (consume("/"))
 			node = new_node(ND_DIV, node, unary());
 		else
 			return (node);
@@ -226,9 +267,9 @@ t_Node	*unary()
 {
 	t_Node	*node;
 
-	if (consume('+'))
+	if (consume("+"))
 		return (unary());
-	if (consume('-'))
+	if (consume("-"))
 		return (new_node(ND_SUB, new_node_num(0), unary()));
 	return (primary());
 }
@@ -237,10 +278,10 @@ t_Node	*primary()
 {
 	t_Node	*node;
 
-	if (consume('('))
+	if (consume("("))
 	{
 		node = expr();
-		expect(')');
+		expect(")");
 		return (node);
 	}
 	return (new_node_num(expect_number()));
