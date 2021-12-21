@@ -173,11 +173,15 @@ t_Node	*expr()
 	t_Node	*node;
 
 	node = mul();
-	if (consume('+'))
-		node = new_node(ND_ADD, node, mul());
-	if (consume('-'))
-		node = new_node(ND_SUB, node, mul());
-	return (node);
+	for (;;)
+	{
+		if (consume('+'))
+			node = new_node(ND_ADD, node, mul());
+		else if (consume('-'))
+			node = new_node(ND_SUB, node, mul());
+		else
+			return (node);
+	}
 }
 
 t_Node	*mul()
@@ -185,11 +189,16 @@ t_Node	*mul()
 	t_Node	*node;
 
 	node = primary();
-	if (consume('*'))
-		node = new_node(ND_MUL, node, primary());
-	if (consume('/'))
-		node = new_node(ND_DIV, node, primary());
-	return (node);
+	for (;;)
+	{
+		if (consume('*'))
+			node = new_node(ND_MUL, node, primary());
+		else if (consume('/'))
+			node = new_node(ND_DIV, node, primary());
+		else
+			return (node);
+
+	}
 }
 
 t_Node	*primary()
@@ -205,6 +214,36 @@ t_Node	*primary()
 	return (new_node_num(expect_number()));
 }
 
+void	gen(t_Node *node)
+{
+	if (node->kind == ND_NUM)
+	{
+		printf("\tpush %d\n", node->val);
+		return ;
+	}
+	gen(node->lhs);
+	gen(node->rhs);
+	printf("\tpop rdi\n");
+	printf("\tpop rax\n");
+	switch (node->kind)
+	{
+	case ND_ADD:
+		printf("\tadd rax, rdi\n");
+		break ;
+	case ND_SUB:
+		printf("\tsub rax, rdi\n");
+		break ;
+	case ND_MUL:
+		printf("\timul rax, rdi\n");
+		break ;
+	case ND_DIV:
+		printf("\tcqo\n");
+		printf("\tidiv rdi\n");
+		break ;
+	}
+	printf("\tpush rax\n");
+}
+
 int main(int argc, char **argv)
 {
 	t_Node	*node;
@@ -217,17 +256,8 @@ int main(int argc, char **argv)
 	printf(".intel_syntax noprefix\n");
 	printf(".globl main\n");
 	printf("main:\n");
-	printf("\tmov rax, %d\n", expect_number());
-	while (!at_eof())
-	{
-		if (consume('+'))
-		{
-			printf("\tadd rax, %d\n", expect_number());
-			continue ;
-		}
-		expect('-');
-		printf("\tsub rax, %d\n", expect_number());
-	}
+	gen(node);
+	printf("\tpop rax\n");
 	printf("\tret\n");
 	return (0);
 }
