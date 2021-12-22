@@ -100,6 +100,7 @@ t_Token	*tokenize(void)
 				|| startswith(p, "<=") || startswith(p, ">="))
 		{
 			cur = new_token(TK_RESERVED, cur, p, 2);
+			p += 2;
 			continue ;
 		}
 		if (strchr("+-*/()<>", *p))
@@ -198,6 +199,47 @@ t_Node	*primary();
 
 t_Node	*expr()
 {
+	return (equality());
+}
+
+t_Node *equality()
+{
+	t_Node	*node;
+
+	node = relational();
+	for (;;)
+	{
+		if (consume("=="))
+			node = new_node(ND_EQ, node, relational());
+		else if (consume("!="))
+			node = new_node(ND_NE, node, relational());
+		else
+			return (node);
+	}
+}
+
+t_Node *relational()
+{
+	t_Node	*node;
+
+	node = add();
+	for (;;)
+	{
+		if (consume("<"))
+			node = new_node(ND_LT, node, add());
+		else if (consume("<="))
+			node = new_node(ND_LE, node, add());
+		else if (consume(">"))
+			node = new_node(ND_LT, add(), node);
+		else if (consume(">="))
+			node = new_node(ND_LE, add(), node);
+		else
+			return (node);
+	}
+}
+
+t_Node	*add()
+{
 	t_Node	*node;
 
 	node = mul();
@@ -212,40 +254,6 @@ t_Node	*expr()
 	}
 }
 
-// t_Node *equality()
-// {
-// 	t_Node	*node;
-// 	return (node);
-// }
-
-// t_Node *relational()
-// {
-// 	t_Node	*node;
-
-// 	node = add();
-// 	for (;;)
-// 	{
-// 		if (consume())
-// 	}
-// 	return (node);
-// }
-
-// t_Node	*add()
-// {
-// 	t_Node	*node;
-
-// 	node = mul();
-// 	for (;;)
-// 	{
-// 		if (consume("+"))
-// 			node = new_node(ND_ADD, node, mul());
-// 		else if (consume("-"))
-// 			node = new_node(ND_SUB, node, mul());
-// 		else
-// 			return (node);
-// 	}
-// }
-
 t_Node	*mul()
 {
 	t_Node	*node;
@@ -259,7 +267,6 @@ t_Node	*mul()
 			node = new_node(ND_DIV, node, unary());
 		else
 			return (node);
-
 	}
 }
 
@@ -312,6 +319,26 @@ void	gen(t_Node *node)
 	case ND_DIV:
 		printf("\tcqo\n");
 		printf("\tidiv rdi\n");
+		break ;
+	case ND_EQ:
+		printf("\tcmp rax, rdi\n");
+		printf("\tsete al\n");
+		printf("\tmovzb rax, al\n");
+		break ;
+	case ND_NE:
+		printf("\tcmp rax, rdi\n");
+		printf("\tsetne al\n");
+		printf("\tmovzb rax, al\n");
+		break ;
+	case ND_LT:
+		printf("\tcmp rax, rdi\n");
+		printf("\tsetl al\n");
+		printf("\tmovzb rax, al\n");
+		break ;
+	case ND_LE:
+		printf("\tcmp rax, rdi\n");
+		printf("\tsetle al\n");
+		printf("\tmovzb rax, al\n");
 		break ;
 	}
 	printf("\tpush rax\n");
