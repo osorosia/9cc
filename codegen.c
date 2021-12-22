@@ -28,6 +28,13 @@ void	gen(t_Node *node)
 		printf("\tmov [rax], rdi\n");
 		printf("\tpush rdi\n");
 		return ;
+	case ND_RETURN:
+		gen(node->lhs);
+		printf("\tpop rax\n");
+		printf("\tmov rsp, rbp\n");
+		printf("\tpop rbp\n");
+		printf("\tret\n");
+		return ;
 	}
 	gen(node->lhs);
 	gen(node->rhs);

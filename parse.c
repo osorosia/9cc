@@ -58,6 +58,14 @@ bool	is_alphabet_lower(char c)
 	return ('a' <= c && c <= 'z');
 }
 
+bool	is_alnum(char c)
+{
+	return (('a' <= c && c <= 'z')
+			|| ('A' <= c && c <= 'Z')
+			|| ('0' <= c && c <= '9')
+			|| (c == '_'));
+}
+
 t_Token	*tokenize(void)
 {
 	t_Token	head;
@@ -86,6 +94,12 @@ t_Token	*tokenize(void)
 		if (strchr("+-*/()<>;=", *p))
 		{
 			cur = new_token(TK_RESERVED, cur, p++, 1);
+			continue ;
+		}
+		if (strncmp(p, "return", 6) == 0 && !is_alnum(p[6]))
+		{
+			cur = new_token(TK_RETURN, cur, p, 6);
+			p += 6;
 			continue ;
 		}
 		if (is_alphabet_lower(*p))
@@ -129,7 +143,8 @@ t_Token	*consume_ident()
 
 bool	consume(char *op)
 {
-	if (g_token->kind != TK_RESERVED
+	if ((g_token->kind != TK_RESERVED
+		&& g_token->kind != TK_RETURN)
 		|| g_token->len != strlen(op)
 		|| memcmp(g_token->str, op, g_token->len))
 		return (false);
@@ -139,7 +154,8 @@ bool	consume(char *op)
 
 void	expect(char *op)
 {
-	if (g_token->kind != TK_RESERVED
+	if ((g_token->kind != TK_RESERVED
+		&& g_token->kind != TK_RETURN)
 		|| g_token->len != strlen(op)
 		|| memcmp(g_token->str, op, g_token->len))
 		error_at(g_token->str, "expected '%s'!", op);
@@ -179,9 +195,17 @@ void	program()
 t_Node	*stmt()
 {
 	t_Node	*node;
-
-	node = expr();
-	expect(";");
+	
+	if (consume("return"))
+	{
+		node = new_node(ND_RETURN, expr(), NULL);
+		expect(";");
+	}
+	else
+	{
+		node = expr();
+		expect(";");
+	}
 	return (node);
 }
 

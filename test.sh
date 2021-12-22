@@ -64,5 +64,14 @@ a + b / 2;"
 assert 6 "foo = 1;
 bar = 2 + 3;
 foo + bar;"
+assert 2 "return 2;"
+assert 2 "return 2;
+return 1;"
+assert 6 "foo = 1;
+bar = 2 + 3;
+return foo + bar;"
+assert 42 "return 42; 21;"
+assert 24 "yama = 57;
+hon = 33; return yama = hon - 9;"
 
 echo OK
