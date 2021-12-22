@@ -1,8 +1,14 @@
 NAME	= 9cc
 CFLAGS	= -std=c11 -g -static
+SRCS	= $(wildcard *.c)
+OBJS	= $(SRCS:.c=.o)
 
 all: $(NAME)
-$(NAME): 9cc.c
+
+$(NAME): $(OBJS)
+	$(CC) -o 9cc $(OBJS) $(LDFLAGS)
+
+$(OBJS): 9cc.h
 
 test: $(NAME)
 	bash test.sh

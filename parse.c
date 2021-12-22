@@ -1,30 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <string.h>
-#include <ctype.h>
-
-typedef enum
-{
-	TK_RESERVED,
-	TK_NUM,
-	TK_EOF,
-}	t_TokenKind;
-
-typedef struct s_Token	t_Token;
-
-struct s_Token
-{
-	t_TokenKind	kind;
-	t_Token		*next;
-	int		val;
-	char		*str;
-	int		len;
-};
-
-t_Token	*g_token;
-char	*user_input;
+#include "9cc.h"
 
 void	error_at(char *loc, char *fmt, ...)
 {
@@ -146,29 +120,6 @@ void	expect(char *op)
 	g_token = g_token->next;
 }
 
-typedef	enum
-{
-	ND_ADD,
-	ND_SUB,
-	ND_MUL,
-	ND_DIV,
-	ND_EQ,
-	ND_NE,
-	ND_LT,
-	ND_LE,
-	ND_NUM,
-}	t_NodeKind;
-
-typedef struct s_Node	t_Node;
-
-struct	s_Node
-{
-	t_NodeKind	kind;
-	t_Node		*lhs;
-	t_Node		*rhs;
-	int			val;
-};
-
 t_Node	*new_node(t_NodeKind	kind, t_Node *lhs, t_Node *rhs)
 {
 	t_Node	*node;
@@ -188,14 +139,6 @@ t_Node	*new_node_num(int val)
 	node->val = val;
 	return (node);
 }
-
-t_Node	*expr();
-t_Node	*equality();
-t_Node	*relational();
-t_Node	*add();
-t_Node	*mul();
-t_Node	*unary();
-t_Node	*primary();
 
 t_Node	*expr()
 {
@@ -294,70 +237,3 @@ t_Node	*primary()
 	return (new_node_num(expect_number()));
 }
 
-void	gen(t_Node *node)
-{
-	if (node->kind == ND_NUM)
-	{
-		printf("\tpush %d\n", node->val);
-		return ;
-	}
-	gen(node->lhs);
-	gen(node->rhs);
-	printf("\tpop rdi\n");
-	printf("\tpop rax\n");
-	switch (node->kind)
-	{
-	case ND_ADD:
-		printf("\tadd rax, rdi\n");
-		break ;
-	case ND_SUB:
-		printf("\tsub rax, rdi\n");
-		break ;
-	case ND_MUL:
-		printf("\timul rax, rdi\n");
-		break ;
-	case ND_DIV:
-		printf("\tcqo\n");
-		printf("\tidiv rdi\n");
-		break ;
-	case ND_EQ:
-		printf("\tcmp rax, rdi\n");
-		printf("\tsete al\n");
-		printf("\tmovzb rax, al\n");
-		break ;
-	case ND_NE:
-		printf("\tcmp rax, rdi\n");
-		printf("\tsetne al\n");
-		printf("\tmovzb rax, al\n");
-		break ;
-	case ND_LT:
-		printf("\tcmp rax, rdi\n");
-		printf("\tsetl al\n");
-		printf("\tmovzb rax, al\n");
-		break ;
-	case ND_LE:
-		printf("\tcmp rax, rdi\n");
-		printf("\tsetle al\n");
-		printf("\tmovzb rax, al\n");
-		break ;
-	}
-	printf("\tpush rax\n");
-}
-
-int main(int argc, char **argv)
-{
-	t_Node	*node;
-	if (argc != 2)
-		error("Invalid argument!");
-
-	user_input = argv[1];
-	g_token = tokenize();
-	node = expr();
-	printf(".intel_syntax noprefix\n");
-	printf(".globl main\n");
-	printf("main:\n");
-	gen(node);
-	printf("\tpop rax\n");
-	printf("\tret\n");
-	return (0);
-}
