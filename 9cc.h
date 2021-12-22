@@ -20,14 +20,13 @@ typedef enum
 }	t_TokenKind;
 
 typedef struct s_Token	t_Token;
-
 struct s_Token
 {
 	t_TokenKind	kind;
 	t_Token		*next;
-	int		val;
+	int			val;
 	char		*str;
-	int		len;
+	int			len;
 };
 
 typedef	enum
@@ -56,6 +55,15 @@ struct	s_Node
 	int			offset;
 };
 
+typedef struct s_LVar	t_LVar;
+struct s_LVar
+{
+	t_LVar	*next;
+	char	*name;
+	int		len;
+	int		offset;
+};
+
 void	error(const char *fmt, ...);
 t_Token	*tokenize(void);
 void	program(void);
@@ -72,6 +80,7 @@ t_Node	*primary(void);
 t_Token	*g_token;
 char	*user_input;
 t_Node	*code[100];
+t_LVar	*g_locals;
 
 //
 // codegen.c

@@ -16,13 +16,7 @@ assert() {
   fi
 }
 
-assert 52 'a = 52;a;'
-assert 1 "a = 1;
-a;
-"
-assert 14 "a = 3;
-b = 5 * 6 - 8;
-a + b / 2;"
+
 
 assert 0 "0;"
 assert 42 "42;"
@@ -58,5 +52,17 @@ assert 1 "1>=1;"
 assert 0 "1>=2;"
 assert 0 "1==1!=1;"
 assert 1 "a = 1; a = a - 1; a == 0;"
+
+assert 52 'a = 52;a;'
+assert 1 "a = 1;
+a;
+"
+assert 14 "a = 3;
+b = 5 * 6 - 8;
+a + b / 2;"
+
+assert 6 "foo = 1;
+bar = 2 + 3;
+foo + bar;"
 
 echo OK

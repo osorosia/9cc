@@ -53,12 +53,18 @@ bool	startswith(char *p, char *q)
 	return (memcmp(p, q, strlen(q)) == 0);
 }
 
+bool	is_alphabet_lower(char c)
+{
+	return ('a' <= c && c <= 'z');
+}
+
 t_Token	*tokenize(void)
 {
 	t_Token	head;
 	t_Token	*cur; 
 	char	*p;
 	char	*q;
+	int		len;
 
 	head.next = NULL;
 	cur = &head;
@@ -82,9 +88,13 @@ t_Token	*tokenize(void)
 			cur = new_token(TK_RESERVED, cur, p++, 1);
 			continue ;
 		}
-		if ('a' <= *p && *p <= 'z')
+		if (is_alphabet_lower(*p))
 		{
-			cur = new_token(TK_IDENT, cur, p++, 1);
+			len = 0;
+			while (is_alphabet_lower(p[len]))
+				len++;
+			cur = new_token(TK_IDENT, cur, p, len);
+			p += cur->len;
 			continue ;
 		}
 		if (isdigit(*p))
@@ -269,14 +279,39 @@ t_Node	*unary()
 	return (primary());
 }
 
+t_LVar	*find_lvar(t_Token *token)
+{
+	for (t_LVar *var = g_locals; var; var = var->next)
+	{
+		if (token->len == var->len 
+			&& !memcmp(token->str, var->name, token->len))
+			return (var);
+	}
+	return (NULL);
+}
 
 t_Node	*new_node_ident(t_Token *token)
 {
 	t_Node	*node;
+	t_LVar	*lvar;
 
 	node = (t_Node *)calloc(1, sizeof(t_Node));
 	node->kind = ND_LVAR;
-	node->offset = (token->str[0] - 'a' + 1) * 8;
+	lvar = find_lvar(token);
+	if (lvar)
+	{
+		node->offset = lvar->offset;
+	}
+	else
+	{
+		lvar = (t_LVar *)calloc(1, sizeof(t_LVar));
+		lvar->next = g_locals;
+		lvar->name = token->str;
+		lvar->len = token->len;
+		lvar->offset = g_locals ? g_locals->offset + 8 : 8;
+		node->offset = lvar->offset;
+		g_locals = lvar;
+	}
 	return (node);
 }
 
@@ -296,4 +331,3 @@ t_Node	*primary()
 		return (new_node_ident(token));
 	return (new_node_num(expect_number()));
 }
-

@@ -11,16 +11,16 @@ int main(int argc, char **argv)
 	printf(".intel_syntax noprefix\n");
 	printf(".globl main\n");
 	printf("main:\n");
-	printf("  push rbp\n");
-	printf("  mov rbp, rsp\n");
-	printf("  sub rsp, 208\n");	
+	printf("\tpush rbp\n");
+	printf("\tmov rbp, rsp\n");
+	printf("\tsub rsp, %d\n", g_locals ? g_locals->offset : 0);
 	for (int i = 0; code[i]; i++)
 	{	
 		gen(code[i]);
 		printf("\tpop rax\n");
 	}
- 	printf("  mov rsp, rbp\n");
- 	printf("  pop rbp\n");
+ 	printf("\tmov rsp, rbp\n");
+ 	printf("\tpop rbp\n");
 	printf("\tret\n");
 	return (0);
 }
