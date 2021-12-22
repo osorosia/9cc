@@ -71,15 +71,20 @@ t_Token	*tokenize(void)
 			continue ;
 		}
 		if (startswith(p, "==") || startswith(p, "!=") 
-				|| startswith(p, "<=") || startswith(p, ">="))
+			|| startswith(p, "<=") || startswith(p, ">="))
 		{
 			cur = new_token(TK_RESERVED, cur, p, 2);
 			p += 2;
 			continue ;
 		}
-		if (strchr("+-*/()<>", *p))
+		if (strchr("+-*/()<>;=", *p))
 		{
 			cur = new_token(TK_RESERVED, cur, p++, 1);
+			continue ;
+		}
+		if ('a' <= *p && *p <= 'z')
+		{
+			cur = new_token(TK_IDENT, cur, p++, 1);
 			continue ;
 		}
 		if (isdigit(*p))
@@ -101,6 +106,17 @@ bool	at_eof(void)
 	return (g_token->kind == TK_EOF);
 }
 
+t_Token	*consume_ident()
+{
+	t_Token	*cur_token;
+
+	if (g_token->kind != TK_IDENT)
+		return (NULL);
+	cur_token = g_token;
+	g_token = g_token->next;
+	return (cur_token);
+}
+
 bool	consume(char *op)
 {
 	if (g_token->kind != TK_RESERVED
@@ -116,7 +132,7 @@ void	expect(char *op)
 	if (g_token->kind != TK_RESERVED
 		|| g_token->len != strlen(op)
 		|| memcmp(g_token->str, op, g_token->len))
-		error_at(g_token->str, "expected '%c'!", op);
+		error_at(g_token->str, "expected '%s'!", op);
 	g_token = g_token->next;
 }
 
@@ -140,12 +156,41 @@ t_Node	*new_node_num(int val)
 	return (node);
 }
 
-t_Node	*expr()
+void	program()
 {
-	return (equality());
+	int	i;
+
+	i = 0;
+	while (!at_eof())
+		code[i++] = stmt();
+	code[i] = NULL;	
 }
 
-t_Node *equality()
+t_Node	*stmt()
+{
+	t_Node	*node;
+
+	node = expr();
+	expect(";");
+	return (node);
+}
+
+t_Node	*expr()
+{
+	return (assign());
+}
+
+t_Node	*assign()
+{
+	t_Node	*node;
+
+	node = equality();
+	if (consume("="))
+		node = new_node(ND_ASSIGN, node, assign());
+	return (node);
+}
+
+t_Node	*equality()
 {
 	t_Node	*node;
 
@@ -161,7 +206,7 @@ t_Node *equality()
 	}
 }
 
-t_Node *relational()
+t_Node	*relational()
 {
 	t_Node	*node;
 
@@ -224,9 +269,21 @@ t_Node	*unary()
 	return (primary());
 }
 
+
+t_Node	*new_node_ident(t_Token *token)
+{
+	t_Node	*node;
+
+	node = (t_Node *)calloc(1, sizeof(t_Node));
+	node->kind = ND_LVAR;
+	node->offset = (token->str[0] - 'a' + 1) * 8;
+	return (node);
+}
+
 t_Node	*primary()
 {
 	t_Node	*node;
+	t_Token	*token;
 
 	if (consume("("))
 	{
@@ -234,6 +291,9 @@ t_Node	*primary()
 		expect(")");
 		return (node);
 	}
+	token = consume_ident();
+	if (token)
+		return (new_node_ident(token));
 	return (new_node_num(expect_number()));
 }
 
