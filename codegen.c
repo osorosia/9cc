@@ -97,6 +97,9 @@ void	gen(t_Node *node)
 			printf("\tpop rax\n");
 		}
 		return ;
+	case ND_FUNC:
+		printf("\tcall %.*s\n", node->len, node->name);
+		return ;
 	}
 	gen(node->lhs);
 	gen(node->rhs);
