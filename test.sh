@@ -33,13 +33,18 @@ assert_stdout() {
   fi
 }
 
-assert_stdout 1,OK 'foo1(1); return 3;'
-assert_stdout 1,2,OK 'foo2(1,2); return 3;'
-assert_stdout 1,2,3,OK 'foo3(1,2,3); return 3;'
-assert_stdout 1,2,3,4,OK 'foo4(1,2,3,4); return 3;'
-assert_stdout 1,2,3,4,5,OK 'foo5(1,2,3,4,5); return 3;'
-assert_stdout 1,2,3,4,5,6,OK 'foo6(1,2,3,4,5,6); return 3;'
-exit
+assert 3 'foo(); return 3;'
+assert 3 'foo(); return 3;'
+assert 3 'foo(); return 3;'
+assert 3 'a = 1; foo(); return 3;'
+assert 3 'a = 1; b = 1; foo(); return 3;'
+assert 3 'a = 1; b = 1; c = 1; foo(); return 3;'
+assert 3 'foo1(1); return 3;'
+assert 3 'foo2(1,2); return 3;'
+assert 3 'foo3(1,2,3); return 3;'
+assert 3 'foo4(1,2,3,4); return 3;'
+assert 3 'foo5(1,2,3,4,5); return 3;'
+assert 3 'foo6(1,2,3,4,5,6); return 3;'
 
 assert 1 'foo(); return 1;'
 assert 1 'foo(); b = 1; return 1;'
@@ -143,6 +148,11 @@ assert_stdout OK 'foo(); return 3;'
 assert_stdout OK 'a = 1; foo(); return 3;'
 assert_stdout OK 'a = 1; b = 1; foo(); return 3;'
 assert_stdout OK 'a = 1; b = 1; c = 1; foo(); return 3;'
-
+assert_stdout 1,OK 'foo1(1); return 3;'
+assert_stdout 1,2,OK 'foo2(1,2); return 3;'
+assert_stdout 1,2,3,OK 'foo3(1,2,3); return 3;'
+assert_stdout 1,2,3,4,OK 'foo4(1,2,3,4); return 3;'
+assert_stdout 1,2,3,4,5,OK 'foo5(1,2,3,4,5); return 3;'
+assert_stdout 1,2,3,4,5,6,OK 'foo6(1,2,3,4,5,6); return 3;'
 
 echo OK

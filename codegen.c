@@ -140,6 +140,7 @@ void	gen(t_Node *node)
 				printf("\tmov r9, rax\n");
 				break ;
 			}
+			args = args->args;
 		}
 		printf("\tcall %.*s\n", node->len, node->name);
 		return ;
