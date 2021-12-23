@@ -33,6 +33,7 @@ assert_stdout() {
   fi
 }
 
+assert 3 'return three();'
 assert 3 'foo(); return 3;'
 assert 3 'foo(); return 3;'
 assert 3 'foo(); return 3;'

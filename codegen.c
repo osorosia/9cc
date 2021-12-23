@@ -143,6 +143,7 @@ void	gen(t_Node *node)
 			args = args->args;
 		}
 		printf("\tcall %.*s\n", node->len, node->name);
+		printf("\tpush rax\n");
 		return ;
 	}
 	gen(node->lhs);
