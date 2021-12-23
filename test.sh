@@ -73,5 +73,10 @@ return foo + bar;"
 assert 42 "return 42; 21;"
 assert 24 "yama = 57;
 hon = 33; return yama = hon - 9;"
+assert 57 "_a = 57; return _a;"
+assert 1 "ABCD = 1; return ABCD;"
+assert 42 "A0cd = 42; return A0cd;"
+assert 10 "end_ = 10; return end_;"
+
 
 echo OK

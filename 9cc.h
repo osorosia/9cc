@@ -8,14 +8,10 @@
 # include <string.h>
 # include <ctype.h>
 
-//
-// parser.c
-//
 typedef enum
 {
 	TK_RESERVED,
 	TK_IDENT,
-	TK_RETURN,
 	TK_NUM,
 	TK_EOF,
 }	t_TokenKind;
@@ -47,7 +43,6 @@ typedef	enum
 }	t_NodeKind;
 
 typedef struct s_Node	t_Node;
-
 struct	s_Node
 {
 	t_NodeKind	kind;
@@ -66,8 +61,22 @@ struct s_LVar
 	int		offset;
 };
 
+//
+// tokenize.c
+//
+
 void	error(const char *fmt, ...);
+bool	at_eof(void);
+t_Token	*consume_ident();
+int		expect_number(void);
+void	expect(char *op);
+bool	consume(char *op);
 t_Token	*tokenize(void);
+
+//
+// parse.c
+//
+
 void	program(void);
 t_Node	*stmt(void);
 t_Node	*expr(void);
@@ -79,14 +88,23 @@ t_Node	*mul(void);
 t_Node	*unary(void);
 t_Node	*primary(void);
 
+//
+// codegen.c
+//
+
+void	gen(t_Node *node);
+
+//
+// utils.c
+//
+
+void	error(const char *fmt, ...);
+bool	startswith(char *p, char *q);
+bool	is_alnum(char c);
+
 t_Token	*g_token;
 char	*user_input;
 t_Node	*code[100];
 t_LVar	*g_locals;
-
-//
-// codegen.c
-//
-void	gen(t_Node *node);
 
 #endif
