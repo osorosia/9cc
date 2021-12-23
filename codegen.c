@@ -39,10 +39,9 @@ void	gen(t_Node *node)
 		gen(node->cond);
 		printf("\tpop rax\n");
 		printf("\tcmp rax, 0\n");
-		printf("\tpop rax\n");
 		printf("\tje .Lend%d\n", g_tag_num);
 		gen(node->then);
-		printf(".Lend%d\n", g_tag_num);
+		printf(".Lend%d:\n", g_tag_num);
 		g_tag_num++;
 		return ;
 	}
