@@ -4,7 +4,7 @@ assert() {
   input="$2"
 
   ./9cc "$input" > tmp.s
-  cc -o tmp tmp.s
+  cc -o tmp tmp.s foo.o
   ./tmp
   actual="$?"
 
@@ -16,6 +16,7 @@ assert() {
   fi
 }
 
+assert 0 "for(i = 1; i < 100; i = i + 1)foo(); return 0;"
 assert 1 '{} return 1;'
 assert 1 '{ return 1; }'
 
