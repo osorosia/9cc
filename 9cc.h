@@ -52,7 +52,9 @@ struct	s_Node
 	t_NodeKind	kind;
 	t_Node		*lhs;
 	t_Node		*rhs;
+	t_Node		*init;
 	t_Node		*cond;
+	t_Node		*update;
 	t_Node		*then;
 	t_Node		*els;
 	int			val;
@@ -76,7 +78,8 @@ void	error(const char *fmt, ...);
 bool	at_eof(void);
 t_Token	*consume_ident();
 int		expect_number(void);
-void	expect(char *op);
+void	expect(char *op);	
+bool	peek(char *op, int len);
 bool	consume(char *op);
 t_Token	*tokenize(void);
 

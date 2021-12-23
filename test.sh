@@ -16,6 +16,10 @@ assert() {
   fi
 }
 
+assert 42 "a = 0; for(;;) if ((a = a + 1) ==  42) return a; return 10;"
+assert 42 "a = 0; for(i = 0; i < 42; i = i + 1) a = a + 1; return a;"
+assert 42 "i = 0; while(i < 42) i = i + 1; return i;"
+assert 42 "i = 0; while(1) if ((i = i + 1) == 42) return i;"
 assert 21 "if(0) return 42; else return 21; return 10;"
 assert 10 "a = 3; if(a < 0) return 10; else if(a < 2) return 20; else if(a < 4) return 10; else return 100;"
 assert 10 'if (0) 2; else 10;'

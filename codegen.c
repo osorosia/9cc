@@ -10,7 +10,9 @@ void	gen_lval(t_Node *node)
 void	gen(t_Node *node)
 {
 	int	tag_num;
-	
+
+	if (!node)
+		return ;
 	switch (node->kind)
 	{	
 	case ND_NUM:
@@ -56,6 +58,30 @@ void	gen(t_Node *node)
 			printf(".Lelse%d:\n", tag_num);
 			gen(node->els);
 		}
+		printf(".Lend%d:\n", tag_num);
+		return ;
+	case ND_WHILE:
+		tag_num = g_tag_num++;
+		printf(".Lbegin%d:\n", tag_num);
+		gen(node->cond);
+		printf("\tpop rax\n");
+		printf("\tcmp rax, 0\n");
+		printf("\tje .Lend%d\n", tag_num);
+		gen(node->then);
+		printf("\tjmp .Lbegin%d\n", tag_num);
+		printf(".Lend%d:\n", tag_num);
+		return ;
+	case ND_FOR:
+		tag_num = g_tag_num++;
+		gen(node->init);
+		printf(".Lbegin%d:\n", tag_num);
+		gen(node->cond);
+		printf("\tpop rax\n");
+		printf("\tcmp rax, 0\n");
+		printf("\tje .Lend%d\n", tag_num);
+		gen(node->then);
+		gen(node->update);
+		printf("\tjmp .Lbegin%d\n", tag_num);
 		printf(".Lend%d:\n", tag_num);
 		return ;
 	}

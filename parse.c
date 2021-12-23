@@ -41,9 +41,33 @@ t_Node	*new_node_if(t_NodeKind kind, t_Node *cond, t_Node *then, t_Node *els)
 	return (node);
 }
 
+t_Node	*new_node_while(t_NodeKind kind, t_Node *cond, t_Node *then)
+{
+	t_Node	*node;
+
+	node = new_node(kind, NULL, NULL);
+	node->cond = cond;
+	node->then = then;
+	return (node);
+}
+
+t_Node	*new_node_for(t_Node *init, t_Node *cond, t_Node *update, t_Node *then)
+{
+	t_Node	*node;
+
+	node = new_node(ND_FOR, NULL, NULL);
+	node->init = init;
+	node->cond = cond;
+	node->update = update;
+	node->then = then;
+	return (node);
+}
+
 t_Node	*stmt()
 {
 	t_Node	*node;
+	t_Node	*node_init;
+	t_Node	*node_update;
 	t_Node	*node_cond;
 	t_Node	*node_then;
 	t_Node	*node_else;
@@ -59,7 +83,35 @@ t_Node	*stmt()
 			node_else = stmt();
 		node = new_node_if(ND_IF, node_cond, node_then, node_else);
 		return (node);
-	}	
+	}
+	if (consume("while"))
+	{
+		expect("(");
+		node_cond = expr();
+		expect(")");
+		node_then = stmt();
+		node = new_node_while(ND_WHILE, node_cond, node_then);
+		return (node);
+	}
+	if (consume("for"))
+	{
+		expect("(");
+		node_init = NULL;
+		node_cond = NULL;
+		node_update = NULL;
+		if (!peek(";", 1))
+			node_init = expr();
+		expect(";");
+		if (!peek(";", 1))
+			node_cond = expr();
+		expect(";");
+		if (!peek(")", 1))
+			node_update = expr();
+		expect(")");
+		node_then = stmt();
+		node = new_node_for(node_init, node_cond, node_update, node_then);
+		return (node);
+	}
 	if (consume("return"))
 	{
 		node = new_node(ND_RETURN, expr(), NULL);

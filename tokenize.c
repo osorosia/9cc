@@ -147,6 +147,20 @@ bool	consume(char *op)
 	return (true);
 }
 
+bool	peek(char *op, int len)
+{
+	t_Token	*token;
+
+	token = g_token;
+	while (len-- && token->kind != TK_EOF)
+		token = token->next;
+	if (token->kind != TK_RESERVED
+		|| token->len != strlen(op)
+		|| memcmp(token->str, op, token->len))
+		return (false);
+	return (true);
+}
+
 void	expect(char *op)
 {
 	if (g_token->kind != TK_RESERVED
