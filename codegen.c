@@ -11,6 +11,8 @@ void	gen(t_Node *node)
 {
 	int		tag_num;
 	t_Block	*block;
+	t_Node	*args;
+	int		args_count;
 
 	if (!node)
 		return ;
@@ -98,6 +100,47 @@ void	gen(t_Node *node)
 		}
 		return ;
 	case ND_FUNC:
+		args = node->args;
+		args_count = 0;
+		while (args)
+		{
+			args_count++;
+			if (args_count > 6)
+				break ;
+			switch (args_count)
+			{
+			case 1:
+				gen(args->lhs);
+				printf("\tpop rax\n");
+				printf("\tmov rdi, rax\n");
+				break ;
+			case 2:
+				gen(args->lhs);
+				printf("\tpop rax\n");
+				printf("\tmov rsi, rax\n");
+				break ;
+			case 3:
+				gen(args->lhs);
+				printf("\tpop rax\n");
+				printf("\tmov rdx, rax\n");
+				break ;
+			case 4:
+				gen(args->lhs);
+				printf("\tpop rax\n");
+				printf("\tmov rcx, rax\n");
+				break ;
+			case 5:
+				gen(args->lhs);
+				printf("\tpop rax\n");
+				printf("\tmov r8, rax\n");
+				break ;
+			case 6:
+				gen(args->lhs);
+				printf("\tpop rax\n");
+				printf("\tmov r9, rax\n");
+				break ;
+			}
+		}
 		printf("\tcall %.*s\n", node->len, node->name);
 		return ;
 	}

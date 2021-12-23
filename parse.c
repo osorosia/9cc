@@ -287,10 +287,21 @@ t_Node	*new_node_func(t_Token *token)
 	return (node);
 }
 
+t_Node	*new_node_args(t_Node *args, t_Node *node)
+{
+	t_Node	*next;
+
+	next = new_node(ND_ARGS, node, NULL);
+	args->args = next;
+	return (next);
+}
+
 t_Node	*primary()
 {
 	t_Node	*node;
 	t_Token	*token;
+	t_Node	*args;
+	t_Node	args_head;
 
 	if (consume("("))
 	{
@@ -304,7 +315,15 @@ t_Node	*primary()
 		if (consume("("))
 		{
 			node = new_node_func(token);
+			if (consume(")"))
+				return (node);
+			args_head.args = NULL;
+			args = &args_head;
+			args = new_node_args(args, expr());
+			while (consume(","))
+				args = new_node_args(args, expr());
 			expect(")");
+			node->args = args_head.args;
 			return (node);
 		}
 		return (new_node_ident(token));

@@ -44,6 +44,7 @@ typedef	enum
 	ND_FOR,
 	ND_LVAR,
 	ND_FUNC,
+	ND_ARGS,
 	ND_BLOCK,
 	ND_NUM,
 }	t_NodeKind;
@@ -60,6 +61,7 @@ struct	s_Node
 	t_Node		*update;
 	t_Node		*then;
 	t_Node		*els;
+	t_Node		*args;
 	t_Block		*block;
 	char		*name;
 	int			len;

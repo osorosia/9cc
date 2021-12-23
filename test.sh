@@ -4,7 +4,7 @@ assert() {
   input="$2"
 
   ./9cc "$input" > tmp.s
-  cc -o tmp tmp.s foo.o 
+  cc -o tmp tmp.s foo.o
   ./tmp
   actual="$?"
 
@@ -21,7 +21,7 @@ assert_stdout() {
   input="$2"
 
   ./9cc "$input" > tmp.s
-  cc -o tmp tmp.s foo.o 
+  cc -o tmp tmp.s foo.o
   ./tmp > tmp.stdout
   actual="$(cat tmp.stdout)"
 
@@ -33,6 +33,13 @@ assert_stdout() {
   fi
 }
 
+assert_stdout 1,OK 'foo1(1); return 3;'
+assert_stdout 1,2,OK 'foo2(1,2); return 3;'
+assert_stdout 1,2,3,OK 'foo3(1,2,3); return 3;'
+assert_stdout 1,2,3,4,OK 'foo4(1,2,3,4); return 3;'
+assert_stdout 1,2,3,4,5,OK 'foo5(1,2,3,4,5); return 3;'
+assert_stdout 1,2,3,4,5,6,OK 'foo6(1,2,3,4,5,6); return 3;'
+exit
 
 assert 1 'foo(); return 1;'
 assert 1 'foo(); b = 1; return 1;'
