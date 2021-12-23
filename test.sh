@@ -4,7 +4,7 @@ assert() {
   input="$2"
 
   ./9cc "$input" > tmp.s
-  cc -o tmp tmp.s foo.o
+  cc -o tmp tmp.s foo.o 
   ./tmp
   actual="$?"
 
@@ -16,7 +16,28 @@ assert() {
   fi
 }
 
-assert 0 "for(i = 1; i < 100; i = i + 1)foo(); return 0;"
+assert_stdout() {
+  expected="$1"
+  input="$2"
+
+  ./9cc "$input" > tmp.s
+  cc -o tmp tmp.s foo.o 
+  ./tmp > tmp.stdout
+  actual="$(cat tmp.stdout)"
+
+  if [ "$actual" = "$expected" ]; then
+    echo "$input => $actual"
+  else
+    echo "$input => $expected expected, but got $actual"
+    exit 1
+  fi
+}
+
+
+assert 1 'foo(); return 1;'
+assert 1 'foo(); b = 1; return 1;'
+assert 1 'foo(); b = 1; return 1;'
+assert 1 'b = 1; foo(); return 1;'
 assert 1 '{} return 1;'
 assert 1 '{ return 1; }'
 
@@ -109,7 +130,12 @@ assert 1 "ABCD = 1; return ABCD;"
 assert 42 "A0cd = 42; return A0cd;"
 assert 10 "end_ = 10; return end_;"
 
-
+assert_stdout OK 'foo(); return 1;'
+assert_stdout OK 'foo(); return 2;'
+assert_stdout OK 'foo(); return 3;'
+assert_stdout OK 'a = 1; foo(); return 3;'
+assert_stdout OK 'a = 1; b = 1; foo(); return 3;'
+assert_stdout OK 'a = 1; b = 1; c = 1; foo(); return 3;'
 
 
 echo OK
