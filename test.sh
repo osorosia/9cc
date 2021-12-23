@@ -16,8 +16,8 @@ assert() {
   fi
 }
 
-
-
+assert 42 "if(1) return 42; return 21;"
+assert 21 "if(0) return 42; return 21;"
 assert 0 "0;"
 assert 42 "42;"
 assert 21 "5+20-4;"

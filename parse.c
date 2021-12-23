@@ -30,20 +30,39 @@ void	program()
 	code[i] = NULL;	
 }
 
+t_Node	*new_node_if(t_NodeKind kind, t_Node *cond, t_Node *then)
+{
+	t_Node	*node;
+
+	node = new_node(kind, NULL, NULL);
+	node->cond = cond;
+	node->then = then;
+	return (node);
+}
+
 t_Node	*stmt()
 {
 	t_Node	*node;
-	
+	t_Node	*node_cond;
+	t_Node	*node_then;
+
+	if (consume("if"))
+	{
+		expect("(");
+		node_cond = expr();
+		expect(")");
+		node_then = stmt();
+		node = new_node_if(ND_IF, node_cond, node_then);
+		return (node);
+	}	
 	if (consume("return"))
 	{
 		node = new_node(ND_RETURN, expr(), NULL);
 		expect(";");
+		return (node);
 	}
-	else
-	{
-		node = expr();
-		expect(";");
-	}
+	node = expr();
+	expect(";");
 	return (node);
 }
 

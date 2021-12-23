@@ -38,6 +38,10 @@ typedef	enum
 	ND_LE,
 	ND_ASSIGN,
 	ND_RETURN,
+	ND_IF,
+	ND_ELSE,
+	ND_WHILE,
+	ND_FOR,
 	ND_LVAR,
 	ND_NUM,
 }	t_NodeKind;
@@ -48,6 +52,8 @@ struct	s_Node
 	t_NodeKind	kind;
 	t_Node		*lhs;
 	t_Node		*rhs;
+	t_Node		*cond;
+	t_Node		*then;
 	int			val;
 	int			offset;
 };
@@ -106,5 +112,6 @@ t_Token	*g_token;
 char	*user_input;
 t_Node	*code[100];
 t_LVar	*g_locals;
+int		g_tag_num;
 
 #endif

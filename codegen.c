@@ -10,7 +10,7 @@ void	gen_lval(t_Node *node)
 void	gen(t_Node *node)
 {
 	switch (node->kind)
-	{
+	{	
 	case ND_NUM:
 		printf("\tpush %d\n", node->val);
 		return ;
@@ -34,6 +34,16 @@ void	gen(t_Node *node)
 		printf("\tmov rsp, rbp\n");
 		printf("\tpop rbp\n");
 		printf("\tret\n");
+		return ;
+	case ND_IF:
+		gen(node->cond);
+		printf("\tpop rax\n");
+		printf("\tcmp rax, 0\n");
+		printf("\tpop rax\n");
+		printf("\tje .Lend%d\n", g_tag_num);
+		gen(node->then);
+		printf(".Lend%d\n", g_tag_num);
+		g_tag_num++;
 		return ;
 	}
 	gen(node->lhs);
