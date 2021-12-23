@@ -2,7 +2,7 @@
 
 ## EBNF
 ```
-program = stmt*
+program = ident "(" (expr( "," expr)*)? ")" "{" stmt* "}" 
 stmt    = expr ";"
         | "if" "(" expr ")" stmt ("else" stmt)?
         | "while" "(" expr ")" stmt
@@ -15,6 +15,6 @@ add        = mul ("+" mul | "-" mul)*
 mul        = unary ("*" unary | "/" unary)*
 unary      = ("+" | "-")? primary
 primary = num
-        | ident ("(" (expr ("," expr)*)? ")")?
+        | ident ( "(" (expr ( "," expr)*)? ")" )?
         | "(" expr ")" 
 ```
