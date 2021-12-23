@@ -63,6 +63,17 @@ t_Node	*new_node_for(t_Node *init, t_Node *cond, t_Node *update, t_Node *then)
 	return (node);
 }
 
+t_Block	*new_block(t_Block *cur, t_Node *node)
+{
+	t_Block	*next;
+
+	next = (t_Block *)calloc(1, sizeof(t_Block));
+	next->node = node;
+	next->next = NULL;
+	cur->next = next;
+	return (next);
+}
+
 t_Node	*stmt()
 {
 	t_Node	*node;
@@ -71,7 +82,19 @@ t_Node	*stmt()
 	t_Node	*node_cond;
 	t_Node	*node_then;
 	t_Node	*node_else;
+	t_Block	*block;
+	t_Block	*block_head;
 
+	if (consume("{"))
+	{
+		memset(block, 0, sizeof(t_Block));
+		block_head = block;
+		while (!consume("}"))
+			block = new_block(block, stmt());
+		node = new_node(ND_BLOCK, NULL, NULL);
+		node->block = block_head->next;
+		return (node);
+	}
 	if (consume("if"))
 	{
 		expect("(");

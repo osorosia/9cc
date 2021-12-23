@@ -43,9 +43,11 @@ typedef	enum
 	ND_WHILE,
 	ND_FOR,
 	ND_LVAR,
+	ND_BLOCK,
 	ND_NUM,
 }	t_NodeKind;
 
+typedef struct s_Block	t_Block;
 typedef struct s_Node	t_Node;
 struct	s_Node
 {
@@ -57,6 +59,7 @@ struct	s_Node
 	t_Node		*update;
 	t_Node		*then;
 	t_Node		*els;
+	t_Block		*block;
 	int			val;
 	int			offset;
 };
@@ -68,6 +71,12 @@ struct s_LVar
 	char	*name;
 	int		len;
 	int		offset;
+};
+
+struct s_Block
+{
+	t_Node	*node;
+	t_Block	*next;
 };
 
 //

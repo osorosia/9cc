@@ -9,7 +9,8 @@ void	gen_lval(t_Node *node)
 
 void	gen(t_Node *node)
 {
-	int	tag_num;
+	int		tag_num;
+	t_Block	*block;
 
 	if (!node)
 		return ;
@@ -86,6 +87,15 @@ void	gen(t_Node *node)
 		gen(node->update);
 		printf("\tjmp .Lbegin%d\n", tag_num);
 		printf(".Lend%d:\n", tag_num);
+		return ;
+	case ND_BLOCK:
+		block = node->block; 
+		while (block)
+		{
+			gen(block->node);
+			block = block->next;
+			printf("\tpop rax\n");
+		}
 		return ;
 	}
 	gen(node->lhs);
