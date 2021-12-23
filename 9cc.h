@@ -54,6 +54,7 @@ struct	s_Node
 	t_Node		*rhs;
 	t_Node		*cond;
 	t_Node		*then;
+	t_Node		*els;
 	int			val;
 	int			offset;
 };

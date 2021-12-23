@@ -30,13 +30,14 @@ void	program()
 	code[i] = NULL;	
 }
 
-t_Node	*new_node_if(t_NodeKind kind, t_Node *cond, t_Node *then)
+t_Node	*new_node_if(t_NodeKind kind, t_Node *cond, t_Node *then, t_Node *els)
 {
 	t_Node	*node;
 
 	node = new_node(kind, NULL, NULL);
 	node->cond = cond;
 	node->then = then;
+	node->els = els;
 	return (node);
 }
 
@@ -45,6 +46,7 @@ t_Node	*stmt()
 	t_Node	*node;
 	t_Node	*node_cond;
 	t_Node	*node_then;
+	t_Node	*node_else;
 
 	if (consume("if"))
 	{
@@ -52,7 +54,10 @@ t_Node	*stmt()
 		node_cond = expr();
 		expect(")");
 		node_then = stmt();
-		node = new_node_if(ND_IF, node_cond, node_then);
+		node_else = NULL;
+		if (consume("else"))
+			node_else = stmt();
+		node = new_node_if(ND_IF, node_cond, node_then, node_else);
 		return (node);
 	}	
 	if (consume("return"))
