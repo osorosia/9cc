@@ -16,6 +16,19 @@ assert() {
   fi
 }
 
+assert 1 '{} return 1;'
+assert 1 '{ return 1; }'
+
+assert 10 "if (1) {
+    a = 10;
+    b = 2;
+    return a;
+} else {
+    a = 1;
+    b = 3;
+    return b;
+}"
+assert 1 "{ return 1; }"
 
 assert 42 "a = 0; for(;;) if ((a = a + 1) ==  42) return a; return 10;"
 assert 42 "a = 0; for(i = 0; i < 42; i = i + 1) a = a + 1; return a;"
@@ -95,16 +108,7 @@ assert 1 "ABCD = 1; return ABCD;"
 assert 42 "A0cd = 42; return A0cd;"
 assert 10 "end_ = 10; return end_;"
 
-assert 10 "if (1) {
-    a = 10;
-    b = 2;
-    return a;
-} else {
-    a = 1;
-    b = 3;
-    return b;
-}"
-assert 1 "{ return 1; }"
+
 
 
 echo OK
