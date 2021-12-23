@@ -75,10 +75,13 @@ void	gen(t_Node *node)
 		tag_num = g_tag_num++;
 		gen(node->init);
 		printf(".Lbegin%d:\n", tag_num);
-		gen(node->cond);
-		printf("\tpop rax\n");
-		printf("\tcmp rax, 0\n");
-		printf("\tje .Lend%d\n", tag_num);
+		if (node->cond)
+		{
+			gen(node->cond);
+			printf("\tpop rax\n");
+			printf("\tcmp rax, 0\n");
+			printf("\tje .Lend%d\n", tag_num);
+		}
 		gen(node->then);
 		gen(node->update);
 		printf("\tjmp .Lbegin%d\n", tag_num);

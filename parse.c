@@ -99,13 +99,13 @@ t_Node	*stmt()
 		node_init = NULL;
 		node_cond = NULL;
 		node_update = NULL;
-		if (!peek(";", 1))
+		if (!peek(";", 0))
 			node_init = expr();
 		expect(";");
-		if (!peek(";", 1))
+		if (!peek(";", 0))
 			node_cond = expr();
 		expect(";");
-		if (!peek(")", 1))
+		if (!peek(")", 0))
 			node_update = expr();
 		expect(")");
 		node_then = stmt();
