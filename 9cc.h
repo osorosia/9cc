@@ -90,6 +90,9 @@ struct s_Obj
 	
 	// Local variable
 	int		offset;
+
+	// Function
+	t_Node	*body;
 };
 
 //
@@ -136,7 +139,7 @@ bool	is_alnum(char c);
 
 t_Token	*g_token;
 char	*user_input;
-t_Node	*code[100];
+t_Obj	*g_program;
 t_Obj	*g_locals;
 int		g_tag_num;
 

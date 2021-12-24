@@ -14,9 +14,10 @@ int main(int argc, char **argv)
 	printf("\tpush rbp\n");
 	printf("\tmov rbp, rsp\n");
 	printf("\tsub rsp, %d\n", g_locals ? g_locals->offset : 0);
-	for (int i = 0; code[i]; i++)
-	{	
-		gen(code[i]);
+	while (g_program)
+	{
+		gen(g_program->body);
+		g_program = g_program->next;
 		printf("\tpop rax\n");
 	}
  	printf("\tmov rsp, rbp\n");

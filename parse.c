@@ -20,14 +20,28 @@ t_Node	*new_node_num(int val)
 	return (node);
 }
 
+t_Obj	*new_obj_func(t_Obj *cur, t_Node *stmt)
+{
+	t_Obj	*next;
+
+	next = (t_Obj *)calloc(1, sizeof(t_Obj));
+	next->body = stmt;
+	cur->next = next;
+	return (next);
+}
+
 void	program()
 {
+	t_Obj	*funcs;
+	t_Obj	head;
 	int	i;
 
+	head.next = NULL;
+	funcs = &head;
 	i = 0;
 	while (!at_eof())
-		code[i++] = stmt();
-	code[i] = NULL;	
+		funcs = new_obj_func(funcs, stmt());
+	g_program = head.next;	
 }
 
 t_Node	*new_node_if(t_NodeKind kind, t_Node *cond, t_Node *then, t_Node *els)
