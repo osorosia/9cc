@@ -99,7 +99,7 @@ void	gen(t_Node *node)
 			printf("\tpop rax\n");
 		}
 		return ;
-	case ND_FUNC:
+	case ND_CALL:
 		args = node->args;
 		args_count = 0;
 		while (args)

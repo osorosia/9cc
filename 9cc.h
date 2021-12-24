@@ -43,7 +43,7 @@ typedef	enum
 	ND_WHILE,  // "while"
 	ND_FOR,    // "for"
 	ND_LVAR,   // Variable
-	ND_FUNC,   // Function
+	ND_CALL,   // call Function 
 	ND_ARGS,   // Arguments
 	ND_BLOCK,  // "{}"
 	ND_NUM,    // Number

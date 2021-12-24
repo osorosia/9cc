@@ -300,7 +300,7 @@ t_Node	*new_node_func(t_Token *token)
 	t_Node	*node;
 
 	node = (t_Node *)calloc(1, sizeof(t_Node));
-	node->kind = ND_FUNC;
+	node->kind = ND_CALL;
 	node->name = token->str;
 	node->len = token->len;
 	return (node);
