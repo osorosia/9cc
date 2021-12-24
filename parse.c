@@ -34,11 +34,9 @@ void	program()
 {
 	t_Obj	*funcs;
 	t_Obj	head;
-	int	i;
 
 	head.next = NULL;
 	funcs = &head;
-	i = 0;
 	while (!at_eof())
 		funcs = new_obj_func(funcs, stmt());
 	g_program = head.next;	
