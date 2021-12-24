@@ -33,7 +33,9 @@ assert_stdout() {
   fi
 }
 
-assert 3 'ahaha() {return three();}'
+assert 3 'main() {return three();}'
+assert 3 'main() {return three();} foo() {return 1;}'
+assert 3 'foo() {return 1;} main() {return three();}'
 echo OK
 
 exit

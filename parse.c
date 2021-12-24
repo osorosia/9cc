@@ -46,6 +46,8 @@ void	program()
 		expect("(");
 		expect(")");
 		funcs = new_obj_func(funcs, stmt());
+		funcs->name = token->str;
+		funcs->len = token->len;
 	}
 	g_program = head.next;	
 }
