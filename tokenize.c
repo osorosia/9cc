@@ -126,11 +126,11 @@ bool	at_eof(void)
 	return (g_token->kind == TK_EOF);
 }
 
-t_Token	*consume_ident()
+t_Token *consume_token(t_TokenKind kind)
 {
 	t_Token	*cur_token;
 
-	if (g_token->kind != TK_IDENT)
+	if (g_token->kind != kind)
 		return (NULL);
 	cur_token = g_token;
 	g_token = g_token->next;

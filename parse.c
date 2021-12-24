@@ -308,7 +308,7 @@ t_Node	*primary()
 		expect(")");
 		return (node);
 	}
-	token = consume_ident();
+	token = consume_token(TK_IDENT);
 	if (token)
 	{
 		if (consume("("))
