@@ -239,9 +239,9 @@ t_Node	*unary()
 	return (primary());
 }
 
-t_LVar	*find_lvar(t_Token *token)
+t_Obj	*find_lvar(t_Token *token)
 {
-	for (t_LVar *var = g_locals; var; var = var->next)
+	for (t_Obj *var = g_locals; var; var = var->next)
 	{
 		if (token->len == var->len 
 			&& !memcmp(token->str, var->name, token->len))
@@ -253,7 +253,7 @@ t_LVar	*find_lvar(t_Token *token)
 t_Node	*new_node_ident(t_Token *token)
 {
 	t_Node	*node;
-	t_LVar	*lvar;
+	t_Obj	*lvar;
 
 	node = (t_Node *)calloc(1, sizeof(t_Node));
 	node->kind = ND_LVAR;
@@ -264,7 +264,7 @@ t_Node	*new_node_ident(t_Token *token)
 	}
 	else
 	{
-		lvar = (t_LVar *)calloc(1, sizeof(t_LVar));
+		lvar = (t_Obj *)calloc(1, sizeof(t_Obj));
 		lvar->next = g_locals;
 		lvar->name = token->str;
 		lvar->len = token->len;
