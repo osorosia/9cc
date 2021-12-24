@@ -10,12 +10,12 @@ int main(int argc, char **argv)
 	program();
 	printf(".intel_syntax noprefix\n");
 	printf(".globl main\n");
-	printf("main:\n");
-	printf("\tpush rbp\n");
-	printf("\tmov rbp, rsp\n");
-	printf("\tsub rsp, %d\n", g_locals ? g_locals->offset : 0);
 	while (g_program)
 	{
+		printf("%.*s:\n", g_program->len, g_program->name);
+		printf("\tpush rbp\n");
+		printf("\tmov rbp, rsp\n");
+		printf("\tsub rsp, %d\n", g_locals ? g_locals->offset : 0);
 		gen(g_program->body);
 		g_program = g_program->next;
 		printf("\tpop rax\n");
