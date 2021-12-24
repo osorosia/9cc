@@ -54,6 +54,7 @@ typedef struct s_Node	t_Node;
 struct	s_Node
 {
 	t_NodeKind	kind;
+	t_Node		*next; // next node
 	t_Node		*lhs;
 	t_Node		*rhs;
 
@@ -67,8 +68,8 @@ struct	s_Node
 	// Function call
 	t_Node		*args;
 
-	// Block statement
-	t_Block		*block;
+	// Block or statement
+	t_Node		*body;
 
 	// Function or variable name and length
 	char		*name;

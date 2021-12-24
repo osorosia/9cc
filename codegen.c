@@ -10,7 +10,7 @@ void	gen_lval(t_Node *node)
 void	gen(t_Node *node)
 {
 	int		tag_num;
-	t_Block	*block;
+	t_Node	*block;
 	t_Node	*args;
 	int		args_count;
 
@@ -91,10 +91,10 @@ void	gen(t_Node *node)
 		printf(".Lend%d:\n", tag_num);
 		return ;
 	case ND_BLOCK:
-		block = node->block; 
+		block = node->next; 
 		while (block)
 		{
-			gen(block->node);
+			gen(block->body);
 			block = block->next;
 			printf("\tpop rax\n");
 		}
