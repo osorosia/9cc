@@ -28,25 +28,25 @@ struct s_Token
 
 typedef	enum
 {
-	ND_ADD,
-	ND_SUB,
-	ND_MUL,
-	ND_DIV,
-	ND_EQ,
-	ND_NE,
-	ND_LT,
-	ND_LE,
-	ND_ASSIGN,
-	ND_RETURN,
-	ND_IF,
-	ND_ELSE,
-	ND_WHILE,
-	ND_FOR,
-	ND_LVAR,
-	ND_FUNC,
-	ND_ARGS,
-	ND_BLOCK,
-	ND_NUM,
+	ND_ADD,    // +
+	ND_SUB,    // -
+	ND_MUL,    // *
+	ND_DIV,    // /
+	ND_EQ,     // ==
+	ND_NE,     // !=
+	ND_LT,     // <
+	ND_LE,     // <=
+	ND_ASSIGN, // =
+	ND_RETURN, // "return"
+	ND_IF,     // "if"
+	ND_ELSE,   // "else"
+	ND_WHILE,  // "while"
+	ND_FOR,    // "for"
+	ND_LVAR,   // Variable
+	ND_FUNC,   // Function
+	ND_ARGS,   // Arguments
+	ND_BLOCK,  // "{}"
+	ND_NUM,    // Number
 }	t_NodeKind;
 
 typedef struct s_Block	t_Block;
@@ -56,16 +56,28 @@ struct	s_Node
 	t_NodeKind	kind;
 	t_Node		*lhs;
 	t_Node		*rhs;
+
+	// "if" or "for" statement
 	t_Node		*init;
 	t_Node		*cond;
 	t_Node		*update;
 	t_Node		*then;
 	t_Node		*els;
+
+	// Function call
 	t_Node		*args;
+
+	// Block statement
 	t_Block		*block;
+
+	// Function or variable name and length
 	char		*name;
 	int			len;
+
+	// Number
 	int			val;
+
+	// Stack offset
 	int			offset;
 };
 
