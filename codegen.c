@@ -9,9 +9,9 @@ void	gen_lval(t_Node *node)
 
 void	gen(t_Node *node)
 {
-	int		tag_num;
 	t_Node	*block;
 	t_Node	*args;
+	int		tag_num;
 	int		args_count;
 
 	if (!node)
