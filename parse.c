@@ -34,11 +34,19 @@ void	program()
 {
 	t_Obj	*funcs;
 	t_Obj	head;
+	t_Token	*token;
 
 	head.next = NULL;
 	funcs = &head;
 	while (!at_eof())
+	{
+		token = consume_token(TK_IDENT);
+		if (!token) 
+			error("expected identifier!");
+		expect("(");
+		expect(")");
 		funcs = new_obj_func(funcs, stmt());
+	}
 	g_program = head.next;	
 }
 
