@@ -49,7 +49,6 @@ typedef	enum
 	ND_NUM,    // Number
 }	t_NodeKind;
 
-typedef struct s_Block	t_Block;
 typedef struct s_Node	t_Node;
 struct	s_Node
 {
@@ -89,12 +88,6 @@ struct s_LVar
 	char	*name;
 	int		len;
 	int		offset;
-};
-
-struct s_Block
-{
-	t_Node	*node;
-	t_Block	*next;
 };
 
 //
