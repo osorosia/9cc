@@ -107,39 +107,14 @@ void	gen(t_Node *node)
 			args_count++;
 			if (args_count > 6)
 				break ;
-			switch (args_count)
-			{
-			case 1:
-				gen(args->lhs);
-				printf("\tpop rax\n");
-				printf("\tmov rdi, rax\n");
-				break ;
-			case 2:
-				gen(args->lhs);
-				printf("\tpop rax\n");
-				printf("\tmov rsi, rax\n");
-				break ;
-			case 3:
-				gen(args->lhs);
-				printf("\tpop rax\n");
-				printf("\tmov rdx, rax\n");
-				break ;
-			case 4:
-				gen(args->lhs);
-				printf("\tpop rax\n");
-				printf("\tmov rcx, rax\n");
-				break ;
-			case 5:
-				gen(args->lhs);
-				printf("\tpop rax\n");
-				printf("\tmov r8, rax\n");
-				break ;
-			case 6:
-				gen(args->lhs);
-				printf("\tpop rax\n");
-				printf("\tmov r9, rax\n");
-				break ;
-			}
+			gen(args->lhs);
+			printf("\tpop rax\n");
+			if (args_count == 1) printf("\tmov rdi, rax\n");
+			if (args_count == 2) printf("\tmov rsi, rax\n");
+			if (args_count == 3) printf("\tmov rdx, rax\n");
+			if (args_count == 4) printf("\tmov rcx, rax\n");
+			if (args_count == 5) printf("\tmov r8, rax\n");
+			if (args_count == 6) printf("\tmov r9, rax\n");
 			args = args->args;
 		}
 		printf("\tcall %.*s\n", node->len, node->name);
