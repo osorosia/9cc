@@ -68,6 +68,14 @@ main()
 { 
 	return fibo(6); 
 }'
+
+assert 3 '
+main(){
+  x = 3;
+  y = &x;
+  return *y;
+}'
+
 echo OK
 
 exit
