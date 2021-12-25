@@ -37,6 +37,7 @@ assert 3 'main() {return three();}'
 assert 3 'main() {return three();} hoge() {return 1;}'
 assert 3 'hoge() {return 1;} main() {return three();}'
 assert 2 'hoge(a) {return a + 1;} main() { return hoge(1); return three();}'
+assert 4 'hoge(a, b) {return a + b + 1;} main() { return hoge(1, 2); return three();}'
 echo OK
 
 exit
