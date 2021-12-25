@@ -37,6 +37,9 @@ assert_stdout() {
 assert 3 'int main() {a = 3; return a;}'
 assert 103 'int hoge(int a){return a + 100;}  int main() {return hoge(3);}'
 assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {return hoge(3, 4);}'
+assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {int a = 3;return hoge(a, 4);}'
+assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {int a = 3; int b = a + 1; return hoge(a, b);}'
+assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {int a = 1; a = 3; return hoge(a, 4);}'
 # assert 3 'int main() {int a = 3; return a;}'
 echo OK
 exit
