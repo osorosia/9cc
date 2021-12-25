@@ -49,7 +49,7 @@ int	is_reserved(char *p)
 	for (int i = 0; i < sizeof(kw) / sizeof(kw[0]); i++)
 	{
 		len = strlen(kw[i]);
-		if (startswith(p, kw[i]) && !is_alnum(p[len]));
+		if (startswith(p, kw[i]) && !is_alnum(p[len]))
 			return (len);
 	}
 	return (0);
@@ -85,42 +85,12 @@ t_Token	*tokenize(void)
 			cur = new_token(TK_RESERVED, cur, p++, 1);
 			continue ;
 		}
-		// len = is_reserved(p);
-		// if (len > 0)
-		// {
-		// 	cur = new_token(TK_RESERVED, cur, p, len);
-		// 	p += len;
-		// 	continue ;
-		// }
-		if (startswith(p, "return") && !is_alnum(p[6]))
+		len = is_reserved(p);
+		if (len > 0)
 		{
-			cur = new_token(TK_RESERVED, cur, p, 6);
-			p += 6;
-			continue ;
-		}
-		if (startswith(p, "if") && !is_alnum(p[2]))
-		{
-			cur = new_token(TK_RESERVED, cur, p, 2);
-			p += 2;
-			continue ;
-		}
-		if (startswith(p, "else") && !is_alnum(p[4]))
-		{
-			cur = new_token(TK_RESERVED, cur, p, 4);
-			p += 4;
-			continue ;
-		}
-		if (startswith(p, "while") && !is_alnum(p[5]))
-		{
-			cur = new_token(TK_RESERVED, cur, p, 5);
-			p += 5;
-			continue ;
-		}
-		if (startswith(p, "for") && !is_alnum(p[3]))
-		{
-			cur = new_token(TK_RESERVED, cur, p, 3);
-			p += 3;
-			continue ;
+		 	cur = new_token(TK_RESERVED, cur, p, len);
+		 	p += len;
+		 	continue ;
 		}
 		if (isdigit(*p))
 		{
