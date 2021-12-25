@@ -92,6 +92,7 @@ struct s_Obj
 	int		offset;
 
 	// Function
+	t_Obj	*locals;
 	t_Node	*body;
 };
 

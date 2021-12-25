@@ -20,12 +20,21 @@ t_Node	*new_node_num(int val)
 	return (node);
 }
 
-t_Obj	*new_obj_func(t_Obj *cur, t_Node *stmt)
+// t_Obj	*new_obj_func(t_Obj *cur, t_Node *stmt)
+// {
+// 	t_Obj	*next;
+
+// 	next = (t_Obj *)calloc(1, sizeof(t_Obj));
+// 	next->body = stmt;
+// 	cur->next = next;
+// 	return (next);
+// }
+
+t_Obj	*new_obj_func(t_Obj *cur)
 {
 	t_Obj	*next;
 
 	next = (t_Obj *)calloc(1, sizeof(t_Obj));
-	next->body = stmt;
 	cur->next = next;
 	return (next);
 }
@@ -38,18 +47,14 @@ void	program()
 	t_Node	*locals;
 
 	head.next = NULL;
-	funcs = &head;
+	g_program = &head;
 	while (!at_eof())
 	{
+		g_program = new_obj_func(g_program);
 		token = consume_token(TK_IDENT);
-		if (!token) 
+		if (!token)
 			error("expected identifier!");
 		expect("(");
-		//token = consume_token(TK_IDENT);
-		//if (token)
-		//{
-		//if (consume("("))
-		//{
 		if (!peek(")", 0))
 		{
 			//args_head.args = NULL;
@@ -61,12 +66,10 @@ void	program()
 			//node->args = args_head.args;
 			//return (node);
 		}
-		//}
-		//return (new_node_ident(token));
 		expect(")");
-		funcs = new_obj_func(funcs, stmt());
-		funcs->name = token->str;
-		funcs->len = token->len;
+		g_program->body = stmt();
+		g_program->name = token->str;
+		g_program->len = token->len;
 	}
 	g_program = head.next;	
 }
