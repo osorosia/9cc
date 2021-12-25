@@ -1,5 +1,7 @@
 #include "9cc.h"
 
+t_Node	*new_node_ident(t_Token *token);
+
 t_Node	*new_node(t_NodeKind	kind, t_Node *lhs, t_Node *rhs)
 {
 	t_Node	*node;
@@ -41,7 +43,6 @@ t_Obj	*new_obj_func(t_Obj *cur)
 
 void	program()
 {
-	t_Obj	*funcs;
 	t_Obj	head;
 	t_Token	*token;
 	t_Node	*locals;
@@ -54,9 +55,15 @@ void	program()
 		token = consume_token(TK_IDENT);
 		if (!token)
 			error("expected identifier!");
+		g_program->name = token->str;
+		g_program->len = token->len;
 		expect("(");
 		if (!peek(")", 0))
 		{
+			token = consume_token(TK_IDENT);
+			if (!token)
+				error("expected identifier!");
+			new_node_ident(token);	
 			//args_head.args = NULL;
 			//args = &args_head;
 			//args = new_node_args(args, expr());
@@ -68,8 +75,6 @@ void	program()
 		}
 		expect(")");
 		g_program->body = stmt();
-		g_program->name = token->str;
-		g_program->len = token->len;
 	}
 	g_program = head.next;	
 }
