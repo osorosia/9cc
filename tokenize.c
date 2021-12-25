@@ -38,6 +38,23 @@ t_Token	*new_token(t_TokenKind kind, t_Token *cur, char *str, int len)
 	return (next);
 }
 
+int	is_reserved(char *p)
+{
+	int	len;
+
+	static char	*kw[] = {
+		"return", "if", "else", "while", "for",
+		"int",
+	};
+	for (int i = 0; i < sizeof(kw) / sizeof(kw[0]); i++)
+	{
+		len = strlen(kw[i]);
+		if (startswith(p, kw[i]) && !is_alnum(p[len]));
+			return (len);
+	}
+	return (0);
+}
+
 t_Token	*tokenize(void)
 {
 	t_Token	head;
@@ -68,6 +85,13 @@ t_Token	*tokenize(void)
 			cur = new_token(TK_RESERVED, cur, p++, 1);
 			continue ;
 		}
+		// len = is_reserved(p);
+		// if (len > 0)
+		// {
+		// 	cur = new_token(TK_RESERVED, cur, p, len);
+		// 	p += len;
+		// 	continue ;
+		// }
 		if (startswith(p, "return") && !is_alnum(p[6]))
 		{
 			cur = new_token(TK_RESERVED, cur, p, 6);

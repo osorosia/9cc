@@ -34,9 +34,9 @@ assert_stdout() {
 }
 
 
-assert 3 'int main() {int a = 3; return a;}'
+# assert 3 'int main() {int a = 3; return a;}'
 
-exit
+# exit
 
 assert 3 'main() {return three();}'
 assert 3 'main() {return three();} hoge() {return 1;}'

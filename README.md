@@ -2,7 +2,7 @@
 
 ## EBNF
 ```
-program = (ident "(" (ident( "," ident)*)? ")" "{" stmt "}")*
+program = ("int" ident "(" ("int" ident( "," "int" ident)*)? ")" "{" stmt "}")*
 stmt    = expr ";"
         | "{" stmt* "}"
         | "if" "(" expr ")" stmt ("else" stmt)?
@@ -16,7 +16,7 @@ relational = add ("<" add | "<=" add | ">" add | ">=" add)*
 add        = mul ("+" mul | "-" mul)*
 mul        = unary ("*" unary | "/" unary)*
 unary      = ("+" | "-")? primary
-	| ("*" | "&") unary
+           | ("*" | "&") unary
 primary = num
         | ident ( "(" (expr ( "," expr)*)? ")" )?
         | "(" expr ")" 
