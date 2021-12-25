@@ -35,6 +35,7 @@ void	program()
 	t_Obj	*funcs;
 	t_Obj	head;
 	t_Token	*token;
+	t_Node	*locals;
 
 	head.next = NULL;
 	funcs = &head;
@@ -44,6 +45,24 @@ void	program()
 		if (!token) 
 			error("expected identifier!");
 		expect("(");
+		//token = consume_token(TK_IDENT);
+		//if (token)
+		//{
+		//if (consume("("))
+		//{
+		if (!peek(")", 0))
+		{
+			//args_head.args = NULL;
+			//args = &args_head;
+			//args = new_node_args(args, expr());
+			//while (consume(","))
+				//args = new_node_args(args, expr());
+			//expect(")");
+			//node->args = args_head.args;
+			//return (node);
+		}
+		//}
+		//return (new_node_ident(token));
 		expect(")");
 		funcs = new_obj_func(funcs, stmt());
 		funcs->name = token->str;
@@ -297,7 +316,7 @@ t_Node	*new_node_ident(t_Token *token)
 	return (node);
 }
 
-t_Node	*new_node_func(t_Token *token)
+t_Node	*new_node_call(t_Token *token)
 {
 	t_Node	*node;
 
@@ -335,7 +354,7 @@ t_Node	*primary()
 	{
 		if (consume("("))
 		{
-			node = new_node_func(token);
+			node = new_node_call(token);
 			if (consume(")"))
 				return (node);
 			args_head.args = NULL;
