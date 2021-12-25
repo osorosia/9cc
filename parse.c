@@ -42,6 +42,7 @@ void	program()
 	while (!at_eof())
 	{
 		g_program = new_obj_func(g_program);
+		expect("int");
 		token = consume_token(TK_IDENT);
 		if (!token)
 			error("expected identifier!");
@@ -50,6 +51,7 @@ void	program()
 		expect("(");
 		if (!peek(")", 0))
 		{
+			expect("int");
 			token = consume_token(TK_IDENT);
 			if (!token)
 				error("expected identifier!");
@@ -57,6 +59,7 @@ void	program()
 			g_program->args_len++;
 			while (consume(","))
 			{
+				expect("int");
 				token = consume_token(TK_IDENT);
 				if (!token)
 					error("expected identifier!");
