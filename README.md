@@ -2,9 +2,7 @@
 
 ## EBNF
 ```
-//program = (ident "(" (expr( "," expr)*)? ")" stmt)*
-
-program = (ident "(" ")" "{" stmt "}")*
+program = (ident "(" (expr( "," expr)*)? ")" "{" stmt "}")*
 stmt    = expr ";"
         | "{" stmt* "}"
         | "if" "(" expr ")" stmt ("else" stmt)?
