@@ -33,6 +33,11 @@ assert_stdout() {
   fi
 }
 
+
+assert 3 'int main() {int a = 3; return a;}'
+
+exit
+
 assert 3 'main() {return three();}'
 assert 3 'main() {return three();} hoge() {return 1;}'
 assert 3 'hoge() {return 1;} main() {return three();}'
