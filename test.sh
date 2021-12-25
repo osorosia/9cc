@@ -38,7 +38,36 @@ assert 3 'main() {return three();} hoge() {return 1;}'
 assert 3 'hoge() {return 1;} main() {return three();}'
 assert 2 'hoge(a) {return a + 1;} main() { return hoge(1); return three();}'
 assert 4 'hoge(a, b) {return a + b + 1;} main() { return hoge(1, 2); return three();}'
-assert 8 'fibo(i) {if (i <= 0) {return 0;} if (i <= 2) {return 1;} return fibo(i - 1) + fibo(i - 2);} main() { return fibo(6); }'
+assert 1 'hoge(a, b)
+{
+	if (a > 2)
+	{
+		return 1;
+	}
+	return a + 1 + b + 1;
+}
+main()
+{
+	hoge(1, 1);
+	return 1;
+}'
+assert 8 '
+fibo(i)
+{
+	if (i <= 0)
+	{
+		return 0;
+	} 
+	if (i <= 2) 
+	{
+		return 1;
+	} 
+	return fibo(i - 1) + fibo(i - 2);
+}
+main() 
+{ 
+	return fibo(6); 
+}'
 echo OK
 
 exit

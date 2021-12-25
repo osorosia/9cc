@@ -25,9 +25,9 @@ int main(int argc, char **argv)
 		gen(g_program->body);
 		g_program = g_program->next;
 		printf("\tpop rax\n");
+		printf("\tmov rsp, rbp\n");
+		printf("\tpop rbp\n");
+		printf("\tret\n");
 	}
- 	printf("\tmov rsp, rbp\n");
- 	printf("\tpop rbp\n");
-	printf("\tret\n");
 	return (0);
 }
