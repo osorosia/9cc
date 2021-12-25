@@ -65,6 +65,14 @@ void	program()
 				error("expected identifier!");
 			new_node_ident(token);
 			g_program->args_len++;
+			while (consume(","))
+			{
+				token = consume_token(TK_IDENT);
+				if (!token)
+					error("expected identifier!");
+				new_node_ident(token);
+				g_program->args_len++;
+			}
 		}
 		expect(")");
 		g_program->body = stmt();
