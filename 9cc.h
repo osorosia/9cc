@@ -32,6 +32,8 @@ typedef	enum
 	ND_SUB,    // -
 	ND_MUL,    // *
 	ND_DIV,    // /
+	ND_ADDR,   // unary &
+	ND_DEREF,  // unary *
 	ND_EQ,     // ==
 	ND_NE,     // !=
 	ND_LT,     // <
