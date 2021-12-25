@@ -272,6 +272,10 @@ t_Node	*unary()
 {
 	t_Node	*node;
 
+	if (consume("*"))
+		return (new_node(ND_DEREF, unary(), NULL));
+	if (consume("&"))
+		return (new_node(ND_ADDR, unary(), NULL));
 	if (consume("+"))
 		return (unary());
 	if (consume("-"))
