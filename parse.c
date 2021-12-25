@@ -31,6 +31,19 @@ t_Obj	*new_obj_func(t_Obj *cur)
 	return (next);
 }
 
+void	program();
+t_Node	*stmt();
+t_Node	*expr();
+t_Node	*assign();
+t_Node	*equality();
+
+t_Node	*relational();
+t_Node	*add();
+t_Node	*mul();
+t_Node	*unary();
+t_Node	*primary();
+t_Node	*declaration();
+
 void	program()
 {
 	t_Obj	head;
@@ -355,6 +368,8 @@ t_Node	*primary()
 		expect(")");
 		return (node);
 	}
+	if (peek("int", 0))
+		return (declaration());
 	token = consume_token(TK_IDENT);
 	if (token)
 	{
@@ -375,4 +390,15 @@ t_Node	*primary()
 		return (new_node_ident(token));
 	}
 	return (new_node_num(expect_number()));
+}
+
+t_Node *declaration()
+{
+	t_Token	*token;
+	
+	expect("int");
+	token = consume_token(TK_IDENT);
+	if (find_lvar(token))
+		error("redefinition of '%.*s'!\n", token->len, token->str);
+	return (new_node_ident(token));
 }
