@@ -16,7 +16,7 @@ relational = add ("<" add | "<=" add | ">" add | ">=" add)*
 add        = mul ("+" mul | "-" mul)*
 mul        = unary ("*" unary | "/" unary)*
 unary      = ("+" | "-")? primary
-			| ("*" | "&") unary
+	| ("*" | "&") unary
 primary = num
         | ident ( "(" (expr ( "," expr)*)? ")" )?
         | "(" expr ")" 
