@@ -7,6 +7,13 @@ void	gen_lval(t_Node *node)
 	printf("\tpush rax\n");
 }
 
+void	gen_func_args(char *str, int offset)
+{
+	printf("\tmov rax, rbp\n");
+	printf("\tsub rax, %d\n", offset);
+	printf("\tmov [rax], %s\n", str);
+}
+
 void	gen(t_Node *node)
 {
 	t_Node	*block;

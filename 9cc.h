@@ -94,6 +94,7 @@ struct s_Obj
 	// Function
 	t_Obj	*locals;
 	t_Node	*body;
+	int		args_len;
 };
 
 //
@@ -129,6 +130,7 @@ t_Node	*primary(void);
 //
 
 void	gen(t_Node *node);
+void	gen_func_args(char *str, int offset);
 
 //
 // utils.c
@@ -141,7 +143,6 @@ bool	is_alnum(char c);
 t_Token	*g_token;
 char	*user_input;
 t_Obj	*g_program;
-t_Obj	*g_locals;
 int		g_tag_num;
 
 #endif

@@ -63,15 +63,8 @@ void	program()
 			token = consume_token(TK_IDENT);
 			if (!token)
 				error("expected identifier!");
-			new_node_ident(token);	
-			//args_head.args = NULL;
-			//args = &args_head;
-			//args = new_node_args(args, expr());
-			//while (consume(","))
-				//args = new_node_args(args, expr());
-			//expect(")");
-			//node->args = args_head.args;
-			//return (node);
+			new_node_ident(token);
+			g_program->args_len++;
 		}
 		expect(")");
 		g_program->body = stmt();
@@ -290,7 +283,7 @@ t_Node	*unary()
 
 t_Obj	*find_lvar(t_Token *token)
 {
-	for (t_Obj *var = g_locals; var; var = var->next)
+	for (t_Obj *var = g_program->locals; var; var = var->next)
 	{
 		if (token->len == var->len 
 			&& !memcmp(token->str, var->name, token->len))
@@ -314,12 +307,12 @@ t_Node	*new_node_ident(t_Token *token)
 	else
 	{
 		lvar = (t_Obj *)calloc(1, sizeof(t_Obj));
-		lvar->next = g_locals;
+		lvar->next = g_program->locals;
 		lvar->name = token->str;
 		lvar->len = token->len;
-		lvar->offset = g_locals ? g_locals->offset + 8 : 8;
+		lvar->offset = g_program->locals ? g_program->locals->offset + 8 : 8;
 		node->offset = lvar->offset;
-		g_locals = lvar;
+		g_program->locals = lvar;
 	}
 	return (node);
 }
