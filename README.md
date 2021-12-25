@@ -19,5 +19,7 @@ unary      = ("+" | "-")? primary
            | ("*" | "&") unary
 primary = num
         | ident ( "(" (expr ( "," expr)*)? ")" )?
-        | "(" expr ")" 
+        | declaration
+        | "(" expr ")"
+declaration = "int" ident
 ```
