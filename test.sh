@@ -41,10 +41,21 @@ assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {return hoge
 assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {int a = 3;return hoge(a, 4);}'
 assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {int a = 3; int b = a + 1; return hoge(a, b);}'
 assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {int a = 1; a = 3; return hoge(a, 4);}'
+assert 3 '
+int main() {
+  int x;
+  int *y;
+  y = &x;
+  *y = 3;
+  return x;
+}'
+echo OK
+exit
+
+echo vvvvvv TODO vvvvvv
 assert 107 'int hoge(int a, int b);  int main() {int a = 1; a = 3; return hoge(a, 4);} int hoge(int a, int b){return a + b + 100;}'
 assert 107 ' int main() {int a = 1; a = 3; return hoge(a, 4);} int hoge(int a, int b){return a + b + 100;}' 
 # assert 3 'int main() {int a = 3; return a;}'
-echo OK
 exit
 
 assert 3 'main() {return three();}'
