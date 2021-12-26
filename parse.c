@@ -81,6 +81,8 @@ void	program()
 			}
 		}
 		expect(")");
+		if (!peek("{", 0))
+			error("expected '{' !");
 		g_program->body = stmt();
 	}
 	g_program = head.next;	
@@ -387,6 +389,8 @@ t_Node	*primary()
 			node->args = args_head.args;
 			return (node);
 		}
+		if (!find_lvar(token))
+			error("'%.*s' undeclared!", token->len, token->str);
 		return (new_node_ident(token));
 	}
 	return (new_node_num(expect_number()));
