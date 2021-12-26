@@ -21,5 +21,9 @@ primary = num
         | ident ( "(" (expr ( "," expr)*)? ")" )?
         | declaration
         | "(" expr ")"
-declaration = "int" ident
 ```
+
+## TODO
+- 関数のプロトタイプ宣言に対応していない
+- {int a = int b = 3; return a + b;} => 6 と正常動作してしまう（構文エラーにする）
+
