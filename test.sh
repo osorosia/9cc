@@ -35,6 +35,7 @@ assert_stdout() {
 
 
 assert 3 'int main() {int a = 3; return a;}'
+assert 3 'int main() {int a; a = 3; return a;}'
 assert 103 'int hoge(int a){return a + 100;}  int main() {return hoge(3);}'
 assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {return hoge(3, 4);}'
 assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {int a = 3;return hoge(a, 4);}'
@@ -65,7 +66,7 @@ main()
 	return 1;
 }'
 assert 8 '
-fibo(i)
+fibo(i)c
 {
 	if (i <= 0)
 	{
