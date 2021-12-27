@@ -52,6 +52,9 @@ typedef	enum
 }	t_NodeKind;
 
 typedef struct s_Node	t_Node;
+typedef struct s_Type	t_Type;
+typedef struct s_Obj	t_Obj;
+
 struct	s_Node
 {
 	t_NodeKind	kind;
@@ -83,12 +86,13 @@ struct	s_Node
 	int			offset;
 };
 
-typedef struct s_Obj	t_Obj;
 struct s_Obj
 {
 	t_Obj	*next;
 	char	*name;
 	int		len;
+	t_Token	*tok;
+	t_Type	*ty;
 	
 	// Local variable
 	int		offset;
@@ -97,6 +101,12 @@ struct s_Obj
 	t_Obj	*locals;
 	t_Node	*body;
 	int		args_len;
+};
+
+struct s_Type
+{
+	enum { INT, PTR }	ty;
+	t_Type				*ptr_to;
 };
 
 //
