@@ -42,6 +42,7 @@ t_Node	*add();
 t_Node	*mul();
 t_Node	*unary();
 t_Node	*primary();
+void	typ();
 t_Node	*declaration();
 
 void	program()
@@ -55,7 +56,7 @@ void	program()
 	while (!at_eof())
 	{
 		g_program = new_obj_func(g_program);
-		expect("int");
+		typ();
 		token = consume_token(TK_IDENT);
 		if (!token)
 			error("expected identifier!");
@@ -64,7 +65,7 @@ void	program()
 		expect("(");
 		if (!peek(")", 0))
 		{
-			expect("int");
+			typ();
 			token = consume_token(TK_IDENT);
 			if (!token)
 				error("expected identifier!");
@@ -72,7 +73,7 @@ void	program()
 			g_program->args_len++;
 			while (consume(","))
 			{
-				expect("int");
+				typ();
 				token = consume_token(TK_IDENT);
 				if (!token)
 					error("expected identifier!");
@@ -394,6 +395,11 @@ t_Node	*primary()
 		return (new_node_ident(token));
 	}
 	return (new_node_num(expect_number()));
+}
+
+void typ()
+{
+	expect("int");
 }
 
 t_Node *declaration()
