@@ -84,6 +84,9 @@ struct	s_Node
 
 	// Stack offset
 	int			offset;
+	
+	// Variable
+	t_Obj		*var;
 };
 
 struct s_Obj
