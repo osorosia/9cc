@@ -139,20 +139,21 @@ t_Node	*add();
 t_Node	*mul();
 t_Node	*unary();
 t_Node	*primary();
-void	typ();
+t_Type	*typ();
 
 void	program()
 {
 	t_Obj	head;
 	t_Token	*token;
 	t_Node	*locals;
+	t_Type	*ty;
 
 	head.next = NULL;
 	g_program = &head;
 	while (!at_eof())
 	{
 		g_program = new_obj_func(g_program);
-		typ();
+		ty = typ();
 		token = consume_token(TK_IDENT);
 		if (!token)
 			error("expected identifier!");
@@ -161,7 +162,7 @@ void	program()
 		expect("(");
 		if (!peek(")", 0))
 		{
-			typ();
+			ty = typ();
 			token = consume_token(TK_IDENT);
 			if (!token)
 				error("expected identifier!");
@@ -169,7 +170,7 @@ void	program()
 			g_program->args_len++;
 			while (consume(","))
 			{
-				typ();
+				ty = typ();
 				token = consume_token(TK_IDENT);
 				if (!token)
 					error("expected identifier!");
@@ -196,6 +197,7 @@ t_Node	*stmt()
 	t_Node	*node_body;
 	t_Node	head;
 	t_Token	*token;
+	t_Type	*ty;
 
 	if (consume("{"))
 	{
@@ -253,9 +255,9 @@ t_Node	*stmt()
 		expect(";");
 		return (node);
 	}
-	if (consume("int"))
+	if (peek("int", 0))
 	{
-		// ttyp();
+		ty = typ();
 		token = peek_token(TK_IDENT);
 		if (!token)
 			error("expected identifier!");
@@ -410,7 +412,21 @@ t_Node	*primary()
 	return (new_node_num(expect_number()));
 }
 
-void typ()
+t_Type	*typ()
 {
+	t_Type	*ty;
+
+	ty = (t_Type *)calloc(1, sizeof(t_Type));
 	expect("int");
+	if (peek("*", 0))
+	{
+		ty->ty = PTR;
+		while (peek("*", 0))
+			expect("*");
+	}
+	else
+	{
+		ty->ty = INT;
+	}
+	return (ty);
 }
