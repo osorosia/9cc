@@ -1,8 +1,5 @@
 #include "9cc.h"
 
-t_Node	*new_node_ident(t_Token *token);
-t_Obj	*find_lvar(t_Token *token);
-
 t_Node	*new_node(t_NodeKind	kind, t_Node *lhs, t_Node *rhs)
 {
 	t_Node	*node;
@@ -30,64 +27,6 @@ t_Obj	*new_obj_func(t_Obj *cur)
 	next = (t_Obj *)calloc(1, sizeof(t_Obj));
 	cur->next = next;
 	return (next);
-}
-
-void	program();
-t_Node	*stmt();
-t_Node	*expr();
-t_Node	*assign();
-t_Node	*equality();
-
-t_Node	*relational();
-t_Node	*add();
-t_Node	*mul();
-t_Node	*unary();
-t_Node	*primary();
-void	typ();
-t_Node	*declaration();
-
-void	program()
-{
-	t_Obj	head;
-	t_Token	*token;
-	t_Node	*locals;
-
-	head.next = NULL;
-	g_program = &head;
-	while (!at_eof())
-	{
-		g_program = new_obj_func(g_program);
-		typ();
-		token = consume_token(TK_IDENT);
-		if (!token)
-			error("expected identifier!");
-		g_program->name = token->str;
-		g_program->len = token->len;
-		expect("(");
-		if (!peek(")", 0))
-		{
-			typ();
-			token = consume_token(TK_IDENT);
-			if (!token)
-				error("expected identifier!");
-			new_node_ident(token);
-			g_program->args_len++;
-			while (consume(","))
-			{
-				typ();
-				token = consume_token(TK_IDENT);
-				if (!token)
-					error("expected identifier!");
-				new_node_ident(token);
-				g_program->args_len++;
-			}
-		}
-		expect(")");
-		if (!peek("{", 0))
-			error("expected '{' !");
-		g_program->body = stmt();
-	}
-	g_program = head.next;	
 }
 
 t_Node	*new_node_if(t_NodeKind kind, t_Node *cond, t_Node *then, t_Node *els)
@@ -131,6 +70,119 @@ t_Node	*new_body(t_Node *cur_body, t_Node *node)
 	cur_body->next = next_body;
 	next_body->body = node;
 	return (next_body);
+}
+
+t_Obj	*find_lvar(t_Token *token)
+{
+	for (t_Obj *var = g_program->locals; var; var = var->next)
+	{
+		if (token->len == var->len 
+			&& !memcmp(token->str, var->name, token->len))
+			return (var);
+	}
+	return (NULL);
+}
+
+t_Node	*new_node_ident(t_Token *token)
+{
+	t_Node	*node;
+	t_Obj	*lvar;
+
+	node = (t_Node *)calloc(1, sizeof(t_Node));
+	node->kind = ND_LVAR;
+	lvar = find_lvar(token);
+	if (lvar)
+	{
+		node->offset = lvar->offset;
+	}
+	else
+	{
+		lvar = (t_Obj *)calloc(1, sizeof(t_Obj));
+		lvar->next = g_program->locals;
+		lvar->name = token->str;
+		lvar->len = token->len;
+		lvar->offset = g_program->locals ? g_program->locals->offset + 8 : 8;
+		node->offset = lvar->offset;
+		g_program->locals = lvar;
+	}
+	return (node);
+}
+
+t_Node	*new_node_call(t_Token *token)
+{
+	t_Node	*node;
+
+	node = (t_Node *)calloc(1, sizeof(t_Node));
+	node->kind = ND_CALL;
+	node->name = token->str;
+	node->len = token->len;
+	return (node);
+}
+
+t_Node	*new_node_args(t_Node *args, t_Node *node)
+{
+	t_Node	*next;
+
+	next = new_node(ND_ARGS, node, NULL);
+	args->args = next;
+	return (next);
+}
+
+void	program();
+t_Node	*stmt();
+t_Node	*expr();
+t_Node	*assign();
+t_Node	*equality();
+
+t_Node	*relational();
+t_Node	*add();
+t_Node	*mul();
+t_Node	*unary();
+t_Node	*primary();
+void	typ();
+
+void	program()
+{
+	t_Obj	head;
+	t_Token	*token;
+	t_Node	*locals;
+
+	head.next = NULL;
+	g_program = &head;
+	while (!at_eof())
+	{
+		g_program = new_obj_func(g_program);
+		typ();
+		token = consume_token(TK_IDENT);
+		if (!token)
+			error("expected identifier!");
+		g_program->name = token->str;
+		g_program->len = token->len;
+		expect("(");
+		if (!peek(")", 0))
+		{
+			typ();
+			token = consume_token(TK_IDENT);
+			if (!token)
+				error("expected identifier!");
+			new_node_ident(token);
+			g_program->args_len++;
+			while (consume(","))
+			{
+				typ();
+				token = consume_token(TK_IDENT);
+				if (!token)
+					error("expected identifier!");
+				new_node_ident(token);
+				g_program->args_len++;
+			}
+		}
+		expect(")");
+		if (!peek("{", 0))
+			error("expected '{' !");
+		g_program->body = stmt();
+	}
+	g_program = head.next;	
 }
 
 t_Node	*stmt()
@@ -321,61 +373,7 @@ t_Node	*unary()
 	return (primary());
 }
 
-t_Obj	*find_lvar(t_Token *token)
-{
-	for (t_Obj *var = g_program->locals; var; var = var->next)
-	{
-		if (token->len == var->len 
-			&& !memcmp(token->str, var->name, token->len))
-			return (var);
-	}
-	return (NULL);
-}
 
-t_Node	*new_node_ident(t_Token *token)
-{
-	t_Node	*node;
-	t_Obj	*lvar;
-
-	node = (t_Node *)calloc(1, sizeof(t_Node));
-	node->kind = ND_LVAR;
-	lvar = find_lvar(token);
-	if (lvar)
-	{
-		node->offset = lvar->offset;
-	}
-	else
-	{
-		lvar = (t_Obj *)calloc(1, sizeof(t_Obj));
-		lvar->next = g_program->locals;
-		lvar->name = token->str;
-		lvar->len = token->len;
-		lvar->offset = g_program->locals ? g_program->locals->offset + 8 : 8;
-		node->offset = lvar->offset;
-		g_program->locals = lvar;
-	}
-	return (node);
-}
-
-t_Node	*new_node_call(t_Token *token)
-{
-	t_Node	*node;
-
-	node = (t_Node *)calloc(1, sizeof(t_Node));
-	node->kind = ND_CALL;
-	node->name = token->str;
-	node->len = token->len;
-	return (node);
-}
-
-t_Node	*new_node_args(t_Node *args, t_Node *node)
-{
-	t_Node	*next;
-
-	next = new_node(ND_ARGS, node, NULL);
-	args->args = next;
-	return (next);
-}
 
 t_Node	*primary()
 {
