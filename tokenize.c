@@ -131,6 +131,16 @@ t_Token *consume_token(t_TokenKind kind)
 	return (cur_token);
 }
 
+t_Token *peek_token(t_TokenKind kind)
+{
+	t_Token	*cur_token;
+
+	if (g_token->kind != kind)
+		return (NULL);
+	cur_token = g_token;
+	return (cur_token);
+}
+
 bool	consume(char *op)
 {
 	if (g_token->kind != TK_RESERVED

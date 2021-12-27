@@ -1,6 +1,7 @@
 #include "9cc.h"
 
 t_Node	*new_node_ident(t_Token *token);
+t_Obj	*find_lvar(t_Token *token);
 
 t_Node	*new_node(t_NodeKind	kind, t_Node *lhs, t_Node *rhs)
 {
@@ -142,6 +143,7 @@ t_Node	*stmt()
 	t_Node	*node_else;
 	t_Node	*node_body;
 	t_Node	head;
+	t_Token	*token;
 
 	if (consume("{"))
 	{
@@ -196,6 +198,23 @@ t_Node	*stmt()
 	if (consume("return"))
 	{
 		node = new_node(ND_RETURN, expr(), NULL);
+		expect(";");
+		return (node);
+	}
+	if (consume("int"))
+	{
+		// ttyp();
+		token = peek_token(TK_IDENT);
+		if (!token)
+			error("expected identifier!");
+		if (find_lvar(token))
+			error("redefinition of '%.*s'!\n", token->len, token->str);
+		new_node_ident(token);
+		node = NULL;
+		if (peek("=", 1))
+			node = expr();
+		else
+			consume_token(TK_IDENT);
 		expect(";");
 		return (node);
 	}
@@ -371,8 +390,6 @@ t_Node	*primary()
 		expect(")");
 		return (node);
 	}
-	if (peek("int", 0))
-		return (declaration());
 	token = consume_token(TK_IDENT);
 	if (token)
 	{
@@ -400,15 +417,4 @@ t_Node	*primary()
 void typ()
 {
 	expect("int");
-}
-
-t_Node *declaration()
-{
-	t_Token	*token;
-	
-	expect("int");
-	token = consume_token(TK_IDENT);
-	if (find_lvar(token))
-		error("redefinition of '%.*s'!\n", token->len, token->str);
-	return (new_node_ident(token));
 }
