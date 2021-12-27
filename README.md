@@ -21,5 +21,5 @@ unary       = ("+" | "-")? primary
 primary     = num
             | ident ( "(" (expr ( "," expr)*)? ")" )?
             | "(" expr ")"
-typ            = "int" "*"*
+typ         = "int" "*"*
 ```
