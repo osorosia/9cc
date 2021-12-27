@@ -1,7 +1,7 @@
 # 9cc
 
 ## EBNF
-```
+```ebnf
 program     = (typ ident "(" (typ ident( "," typ ident)*)? ")" "{" stmt "}")*
 stmt        = expr ";"
             | "{" stmt* "}"
@@ -19,7 +19,7 @@ mul         = unary ("*" unary | "/" unary)*
 unary       = ("+" | "-")? primary
             | ("*" | "&") unary
 primary     = num
-            | ident ( "(" (expr ( "," expr)*)? ")" )?
+            | (ident ( "(" (expr ( "," expr)*)? ")" )?
             | "(" expr ")"
 typ         = "int" "*"*
 ```
