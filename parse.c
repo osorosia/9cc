@@ -83,7 +83,7 @@ t_Obj	*find_lvar(t_Token *token)
 	return (NULL);
 }
 
-t_Node	*new_node_ident(t_Token *token)
+t_Node	*new_node_ident(t_Token *token, t_Type *ty)
 {
 	t_Node	*node;
 	t_Obj	*lvar;
@@ -102,6 +102,7 @@ t_Node	*new_node_ident(t_Token *token)
 		lvar->name = token->str;
 		lvar->len = token->len;
 		lvar->offset = g_program->locals ? g_program->locals->offset + 8 : 8;
+		lvar->ty = ty;
 		node->offset = lvar->offset;
 		g_program->locals = lvar;
 	}
@@ -159,6 +160,7 @@ void	program()
 			error("expected identifier!");
 		g_program->name = token->str;
 		g_program->len = token->len;
+		g_program->ty = ty;
 		expect("(");
 		if (!peek(")", 0))
 		{
@@ -166,7 +168,7 @@ void	program()
 			token = consume_token(TK_IDENT);
 			if (!token)
 				error("expected identifier!");
-			new_node_ident(token);
+			new_node_ident(token, ty);
 			g_program->args_len++;
 			while (consume(","))
 			{
@@ -174,7 +176,7 @@ void	program()
 				token = consume_token(TK_IDENT);
 				if (!token)
 					error("expected identifier!");
-				new_node_ident(token);
+				new_node_ident(token, ty);
 				g_program->args_len++;
 			}
 		}
@@ -263,7 +265,7 @@ t_Node	*stmt()
 			error("expected identifier!");
 		if (find_lvar(token))
 			error("redefinition of '%.*s'!\n", token->len, token->str);
-		new_node_ident(token);
+		new_node_ident(token, ty);
 		node = NULL;
 		if (peek("=", 1))
 			node = expr();
@@ -407,7 +409,7 @@ t_Node	*primary()
 		}
 		if (!find_lvar(token))
 			error("'%.*s' undeclared!", token->len, token->str);
-		return (new_node_ident(token));
+		return (new_node_ident(token, NULL));
 	}
 	return (new_node_num(expect_number()));
 }
