@@ -2,9 +2,19 @@
 
 void	gen_lval(t_Node *node)
 {
-	printf("\tmov rax, rbp\n");
-	printf("\tsub rax, %d\n", node->offset);
-	printf("\tpush rax\n");
+	if (node->kind == ND_LVAR)
+	{	
+		printf("\tmov rax, rbp\n");
+		printf("\tsub rax, %d\n", node->offset);
+		printf("\tpush rax\n");
+		return ;
+	}
+	if (node->kind == ND_DEREF)
+	{
+		gen(node->lhs);
+		return ;
+	}
+	error("not an lvalue");
 }
 
 void	gen_func_args(char *str, int offset)
