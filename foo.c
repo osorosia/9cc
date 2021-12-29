@@ -8,3 +8,12 @@ int foo5(int x1, int x2, int x3, int x4, int x5) { printf("%d,%d,%d,%d,%d,OK\n",
 int foo6(int x1, int x2, int x3, int x4, int x5, int x6) { printf("%d,%d,%d,%d,%d,%d,OK\n", x1, x2, x3, x4, x5, x6); return 0;};
 
 int three() {return 3;}
+
+void alloc4(int **p, int a0, int a1, int a2, int a3)
+{
+    *p = (int *)malloc(sizeof(int) * 4);
+    (*p)[0] = a0;
+    (*p)[1] = a1;
+    (*p)[2] = a2;
+    (*p)[3] = a3;
+}
