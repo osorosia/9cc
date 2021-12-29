@@ -18,6 +18,8 @@ int main(int argc, char **argv)
 		printf("\tsub rsp, %d\n", g_program->locals ? g_program->locals->offset : 0);
 		if (g_program->locals != NULL && g_program->locals->offset % 16 != 0)
 			printf("\tsub rsp, 0x18\n");
+		else
+			printf("\tsub rsp, 0x10\n");
 		if (g_program->args_len >= 1) gen_func_args("rdi", 8);
 		if (g_program->args_len >= 2) gen_func_args("rsi", 8 * 2);
 		if (g_program->args_len >= 3) gen_func_args("rdx", 8 * 3);
