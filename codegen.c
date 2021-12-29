@@ -4,7 +4,9 @@ int	size_of(t_Type *ty)
 {
 	if (ty->ptr_to->ty == INT)
 		return 4;
-	return 8;
+	if (ty->ptr_to->ty == PTR)
+		return 8;
+	error("invalid type!");
 }
 
 void	gen_lval(t_Node *node)
