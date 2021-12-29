@@ -87,6 +87,7 @@ struct	s_Node
 	
 	// Variable
 	t_Obj		*var;
+	t_Type		*ty;
 };
 
 struct s_Obj

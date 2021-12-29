@@ -24,6 +24,15 @@ void	gen_func_args(char *str, int offset)
 	printf("\tmov [rax], %s\n", str);
 }
 
+void	swap(t_Node **l, t_Node **r)
+{
+	t_Node	*tmp;
+
+	tmp = *l;
+	*l = *r;
+	*r = tmp;
+}
+
 void	gen(t_Node *node)
 {
 	t_Node	*block;
@@ -155,16 +164,36 @@ void	gen(t_Node *node)
 	{
 	case ND_ADD:
 		printf("\tadd rax, rdi\n");
+		if (node->lhs->ty->ty == PTR)
+			swap(&node->lhs, &node->rhs);
+		if (node->lhs->ty->ty == PTR)
+			error("<pointer> + <pointer> is not defined!");
+		node->ty = node->lhs->ty;
 		break ;
 	case ND_SUB:
 		printf("\tsub rax, rdi\n");
+		if (node->lhs->ty->ty == PTR)
+			swap(&node->lhs, &node->rhs);
+		if (node->lhs->ty->ty == PTR)
+			error("<pointer> - <pointer> is not defined!");
+		node->ty = node->lhs->ty;
 		break ;
 	case ND_MUL:
 		printf("\timul rax, rdi\n");
+		if (node->lhs->ty->ty == PTR)
+			swap(&node->lhs, &node->rhs);
+		if (node->lhs->ty->ty == PTR)
+			error("<pointer> * <pointer> is not defined!");
+		node->ty = node->lhs->ty;
 		break ;
 	case ND_DIV:
 		printf("\tcqo\n");
 		printf("\tidiv rdi\n");
+		if (node->lhs->ty->ty == PTR)
+			swap(&node->lhs, &node->rhs);
+		if (node->lhs->ty->ty == PTR)
+			error("<pointer> / <pointer> is not defined!");
+		node->ty = node->lhs->ty;
 		break ;
 	case ND_EQ:
 		printf("\tcmp rax, rdi\n");

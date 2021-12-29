@@ -14,9 +14,13 @@ t_Node	*new_node(t_NodeKind	kind, t_Node *lhs, t_Node *rhs)
 t_Node	*new_node_num(int val)
 {
 	t_Node	*node;
+	t_Type	*ty;
 
 	node = new_node(ND_NUM, NULL, NULL);
 	node->val = val;
+	ty = (t_Type *)calloc(1, sizeof(t_Type));
+	ty->ty = INT;
+	node->ty = ty;
 	return (node);
 }
 
@@ -94,6 +98,7 @@ t_Node	*new_node_ident(t_Token *token, t_Type *ty)
 	if (lvar)
 	{
 		node->offset = lvar->offset;
+		node->ty = lvar->ty;
 	}
 	else
 	{
@@ -104,6 +109,7 @@ t_Node	*new_node_ident(t_Token *token, t_Type *ty)
 		lvar->offset = g_program->locals ? g_program->locals->offset + 8 : 8;
 		lvar->ty = ty;
 		node->offset = lvar->offset;
+		node->ty = ty;
 		g_program->locals = lvar;
 	}
 	node->var = lvar;
@@ -118,6 +124,7 @@ t_Node	*new_node_call(t_Token *token)
 	node->kind = ND_CALL;
 	node->name = token->str;
 	node->len = token->len;
+	node->ty = (t_Type *)calloc(1, sizeof(t_Type));
 	return (node);
 }
 
