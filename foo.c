@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 int foo() { printf("OK\n"); return 0;};
 int foo1(int x1) { printf("%d,OK\n", x1); return 0;};
 int foo2(int x1, int x2) { printf("%d,%d,OK\n", x1, x2); return 0;};

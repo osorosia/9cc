@@ -50,12 +50,30 @@ int main() {
   return x;
 }'
 
+assert 8 '
+int fibo(int i)
+{
+	if (i <= 0)
+	{
+		return 0;
+	} 
+	if (i <= 2) 
+	{
+		return 1;
+	} 
+	return fibo(i - 1) + fibo(i - 2);
+}
+int main() 
+{ 
+	return fibo(6); 
+}'
+
 assert 4 '
 int main() {
   int *p;
   alloc4(&p, 1, 2, 4, 8);
   int *q;
-  q = p + 3
+  q = p + 2;
   return *q;
 }
 '
