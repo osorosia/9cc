@@ -1,5 +1,12 @@
 #include "9cc.h"
 
+int	size_of(t_Type *ty)
+{
+	if (ty->ptr_to->ty == INT)
+		return 4;
+	return 8;
+}
+
 void	gen_lval(t_Node *node)
 {
 	if (node->kind == ND_LVAR)
@@ -37,6 +44,7 @@ void	gen(t_Node *node)
 {
 	t_Node	*block;
 	t_Node	*args;
+	t_Type	*ty;
 	int		tag_num;
 	int		args_count;
 
@@ -55,12 +63,17 @@ void	gen(t_Node *node)
 		return ;
 	case ND_ADDR:
 		gen_lval(node->lhs);
+		node->ty = (t_Type *)calloc(1, sizeof(t_Type));
+		node->ty->ty = PTR;
+		node->ty->ptr_to = node->lhs->ty;
 		return ;
 	case ND_DEREF:
 		gen(node->lhs);
 		printf("\tpop rax\n");
 		printf("\tmov rax, [rax]\n");
 		printf("\tpush rax\n");
+		node->ty = (t_Type *)calloc(1, sizeof(t_Type));
+		node->ty->ty = node->lhs->ty->ptr_to->ty;
 		return ;
 	case ND_ASSIGN:
 		gen_lval(node->lhs);
@@ -163,6 +176,10 @@ void	gen(t_Node *node)
 	switch (node->kind)
 	{
 	case ND_ADD:
+		if (node->lhs->ty->ty == PTR)
+			printf("\timul rdi, %d\n", size_of(node->lhs->ty));
+		if (node->rhs->ty->ty == PTR)
+			printf("\timul rax, %d\n", size_of(node->rhs->ty));
 		printf("\tadd rax, rdi\n");
 		if (node->lhs->ty->ty == PTR)
 			swap(&node->lhs, &node->rhs);
@@ -171,6 +188,10 @@ void	gen(t_Node *node)
 		node->ty = node->lhs->ty;
 		break ;
 	case ND_SUB:
+		if (node->lhs->ty->ty == PTR)
+			printf("\timul rdi, %d\n", size_of(node->lhs->ty));
+		if (node->rhs->ty->ty == PTR)
+			printf("\timul rax, %d\n", size_of(node->rhs->ty));
 		printf("\tsub rax, rdi\n");
 		if (node->lhs->ty->ty == PTR)
 			swap(&node->lhs, &node->rhs);
