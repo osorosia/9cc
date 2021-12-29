@@ -418,19 +418,17 @@ t_Node	*primary()
 t_Type	*typ()
 {
 	t_Type	*ty;
+	t_Type	*ty_prev;
 
 	ty = (t_Type *)calloc(1, sizeof(t_Type));
 	expect("int");
-	if (peek("*", 0))
+	ty->ty = INT;
+	while (consume("*"))
 	{
+		ty_prev = ty;
+		ty = (t_Type *)calloc(1, sizeof(t_Type));
+		ty->ptr_to = ty_prev;
 		ty->ty = PTR;
-		ty->ptr_to = INT;
-		while (peek("*", 0))
-			expect("*");
-	}
-	else
-	{
-		ty->ty = INT;
 	}
 	return (ty);
 }
