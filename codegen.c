@@ -201,19 +201,19 @@ void	gen(t_Node *node)
 		break ;
 	case ND_MUL:
 		printf("\timul rax, rdi\n");
-		if (node->lhs->ty->ty == PTR)
+		if (node->lhs->ty->ty != PTR)
 			swap(&node->lhs, &node->rhs);
 		if (node->lhs->ty->ty == PTR)
-			error("<pointer> * <pointer> is not defined!");
+			error("<pointer> * <***> is not defined!");
 		node->ty = node->lhs->ty;
 		break ;
 	case ND_DIV:
 		printf("\tcqo\n");
 		printf("\tidiv rdi\n");
-		if (node->lhs->ty->ty == PTR)
+		if (node->lhs->ty->ty != PTR)
 			swap(&node->lhs, &node->rhs);
 		if (node->lhs->ty->ty == PTR)
-			error("<pointer> / <pointer> is not defined!");
+			error("<pointer> / <***> is not defined!");
 		node->ty = node->lhs->ty;
 		break ;
 	case ND_EQ:
