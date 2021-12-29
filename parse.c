@@ -106,6 +106,7 @@ t_Node	*new_node_ident(t_Token *token, t_Type *ty)
 		node->offset = lvar->offset;
 		g_program->locals = lvar;
 	}
+	node->var = lvar;
 	return (node);
 }
 
@@ -423,6 +424,7 @@ t_Type	*typ()
 	if (peek("*", 0))
 	{
 		ty->ty = PTR;
+		ty->ptr_to = INT;
 		while (peek("*", 0))
 			expect("*");
 	}
