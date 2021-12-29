@@ -187,7 +187,7 @@ void	gen(t_Node *node)
 			swap(&node->lhs, &node->rhs);
 		if (node->lhs->ty->ty == PTR)
 			error("<pointer> + <pointer> is not defined!");
-		node->ty = node->lhs->ty;
+		node->ty = node->rhs->ty;
 		break ;
 	case ND_SUB:
 		if (node->lhs->ty->ty == PTR)
@@ -199,7 +199,7 @@ void	gen(t_Node *node)
 			swap(&node->lhs, &node->rhs);
 		if (node->lhs->ty->ty == PTR)
 			error("<pointer> - <pointer> is not defined!");
-		node->ty = node->lhs->ty;
+		node->ty = node->rhs->ty;
 		break ;
 	case ND_MUL:
 		printf("\timul rax, rdi\n");

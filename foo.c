@@ -18,3 +18,25 @@ void alloc4(int **p, int a0, int a1, int a2, int a3)
     (*p)[2] = a2;
     (*p)[3] = a3;
 }
+
+int *alloc1(int x, int y) {
+  static int arr[2];
+  arr[0] = x;
+  arr[1] = y;
+  return arr;
+}
+int *alloc2(int x, int y) {
+  static int arr[2];
+  arr[0] = x;
+  arr[1] = y;
+  return arr + 1;
+}
+int **alloc_ptr_ptr(int x) {
+  static int **p;
+  static int *q;
+  static int r;
+  r = x;
+  q = &r;
+  p = &q;
+  return p;
+}
