@@ -142,6 +142,7 @@ t_Node  *unary();
 t_Node  *primary();
 t_Type  *typ();
 
+// program = (typ ident "(" (typ ident( "," typ ident)*)? ")" "{" stmt "}")*
 void program() {
     t_Obj   head;
     t_Token *token;
@@ -184,6 +185,14 @@ void program() {
     g_program = head.next;    
 }
 
+// stmt = expr ";"
+//      | "{" stmt* "}"
+//      | "if" "(" expr ")" stmt ("else" stmt)?
+//      | "while" "(" expr ")" stmt
+//      | "for" "(" expr? ";" expr? ";" expr? ")" stmt
+//      | "return" expr? ";"
+//      | typ ident ("=" expr)? ";"
+//      | typ ident "[" num "]" ";"
 t_Node    *stmt() {
     t_Node    *node;
     t_Node    *node_init;
@@ -197,6 +206,7 @@ t_Node    *stmt() {
     t_Type    *ty;
     t_Type    *ty_prev;
 
+    // "{" stmt* "}"
     if (consume("{")) {
         head.next = NULL;
         node_body = &head;
@@ -206,6 +216,7 @@ t_Node    *stmt() {
         node->next = head.next;
         return (node);
     }
+    // "if" "(" expr ")" stmt ("else" stmt)?
     if (consume("if")) {
         expect("(");
         node_cond = expr();
@@ -217,6 +228,7 @@ t_Node    *stmt() {
         node = new_node_if(ND_IF, node_cond, node_then, node_else);
         return (node);
     }
+    // "while" "(" expr ")" stmt
     if (consume("while")) {
         expect("(");
         node_cond = expr();
@@ -225,6 +237,7 @@ t_Node    *stmt() {
         node = new_node_while(ND_WHILE, node_cond, node_then);
         return (node);
     }
+    // "for" "(" expr? ";" expr? ";" expr? ")" stmt
     if (consume("for")) {
         expect("(");
         node_init = NULL;
@@ -243,11 +256,14 @@ t_Node    *stmt() {
         node = new_node_for(node_init, node_cond, node_update, node_then);
         return (node);
     }
+    // "return" expr? ";"
     if (consume("return")) {
         node = new_node(ND_RETURN, expr(), NULL);
         expect(";");
         return (node);
     }
+    // typ ident ("=" expr)? ";"
+    // typ ident "[" num "]" ";"
     if (peek("int", 0)) {
         ty = typ();
         token = peek_token(TK_IDENT);
@@ -274,15 +290,18 @@ t_Node    *stmt() {
         expect(";");
         return (node);
     }
+    // expr ";"
     node = expr();
     expect(";");
     return (node);
 }
 
+// expr = assign
 t_Node *expr() {
     return assign();
 }
 
+// assign = equality ("=" assign)?
 t_Node *assign() {
     t_Node *node;
 
@@ -292,6 +311,7 @@ t_Node *assign() {
     return node;
 }
 
+// equality = relational ("==" relational | "!=" relational)*
 t_Node *equality() {
     t_Node *node;
 
@@ -306,6 +326,7 @@ t_Node *equality() {
     }
 }
 
+// relational = add ("<" add | "<=" add | ">" add | ">=" add)*
 t_Node *relational() {
     t_Node *node;
 
@@ -324,6 +345,7 @@ t_Node *relational() {
     }
 }
 
+// add = mul ("+" mul | "-" mul)*
 t_Node *add() {
     t_Node *node;
 
@@ -338,6 +360,7 @@ t_Node *add() {
     }
 }
 
+// mul = unary ("*" unary | "/" unary)*
 t_Node *mul() {
     t_Node *node;
 
@@ -352,9 +375,9 @@ t_Node *mul() {
     }
 }
 
+// unary = ("+" | "-")? primary
+//       | ("*" | "&" | "sizeof") unary
 t_Node *unary() {
-    t_Node *node;
-    
     if (consume("sizeof"))
         return (new_node(ND_SIZEOF, unary(), NULL));
     if (consume("*"))
@@ -368,17 +391,22 @@ t_Node *unary() {
     return (primary());
 }
 
+// primary = num
+//         | (ident ( "(" (expr ( "," expr)*)? ")" )?
+//         | "(" expr ")"
 t_Node *primary() {
     t_Node    *node;
     t_Token   *token;
     t_Node    *args;
     t_Node    args_head;
 
+    // "(" expr ")"
     if (consume("(")) {
         node = expr();
         expect(")");
         return (node);
     }
+    // (ident ( "(" (expr ( "," expr)*)? ")" )?
     token = consume_token(TK_IDENT);
     if (token) {
         if (consume("(")) {
@@ -398,9 +426,11 @@ t_Node *primary() {
             error("'%.*s' undeclared!", token->len, token->str);
         return new_node_ident(token, NULL);
     }
+    // num
     return new_node_num(expect_number());
 }
 
+// typ = "int" "*"*
 t_Type *typ() {
     t_Type *ty = new_type(TY_INT, NULL, 1);
     expect("int");
