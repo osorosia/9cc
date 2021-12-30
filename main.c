@@ -7,6 +7,7 @@ int main(int argc, char **argv) {
     user_input = argv[1];
     g_token = tokenize();
     program();
+
     printf(".intel_syntax noprefix\n");
     printf(".globl main\n");
     while (g_program) {
