@@ -122,6 +122,14 @@ t_Node *new_node_args(t_Node *args, t_Node *node) {
     return (next);
 }
 
+t_Type *new_type(t_TypeKind kind, t_Type *ptr_to, int array_size) {
+    t_Type *ty = (t_Type *)calloc(1, sizeof(t_Type));
+    ty->kind = kind;
+    ty->ptr_to = ptr_to;
+    ty->array_size = array_size;
+    return ty;
+}
+
 void    program();
 t_Node  *stmt();
 t_Node  *expr();
@@ -394,19 +402,9 @@ t_Node *primary() {
 }
 
 t_Type *typ() {
-    t_Type  *ty;
-    t_Type  *ty_prev;
-
-    ty = (t_Type *)calloc(1, sizeof(t_Type));
+    t_Type *ty = new_type(TY_INT, NULL, 1);
     expect("int");
-    ty->kind = TY_INT;
-    ty->array_size = 1;
-    while (consume("*")) {
-        ty_prev = ty;
-        ty = (t_Type *)calloc(1, sizeof(t_Type));
-        ty->ptr_to = ty_prev;
-        ty->kind = TY_PTR;
-        ty->array_size = 1;
-    }
-    return (ty);
+    while (consume("*"))
+        ty = new_type(TY_PTR, ty, 1);
+    return ty;
 }
