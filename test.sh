@@ -16,6 +16,28 @@ assert() {
   fi
 }
 
+assert_vs_gcc() {
+  input="$1"
+
+  echo "$input" > tmp.c
+  gcc -c tmp.c
+  cc -o tmp tmp.o foo.o
+  ./tmp
+  expected="$?"
+
+  ./9cc "$input" > tmp.s
+  cc -o tmp tmp.s foo.o
+  ./tmp
+  actual="$?"
+
+  if [ "$actual" = "$expected" ]; then
+    echo "$input => $actual"
+  else
+    echo "$input => $expected expected, but got $actual"
+    exit 1
+  fi
+}
+
 assert_stdout() {
   expected="$1"
   input="$2"
@@ -152,6 +174,17 @@ main(){
 }'
 
 echo OK
+
+assert 2 '
+int *f() {
+  int *p;
+  alloc4(&p, 1, 2, 4, 8);
+  return p;
+}
+int main() {
+  return *(f() + 1);
+}
+'
 
 exit
 
