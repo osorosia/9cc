@@ -112,6 +112,14 @@ assert 8 'int main() { int *p = alloc1(3, 5); return *p + *(p + 1); }'
 assert 9 'int main() { int *p = alloc2(2, 7); return *p + *(p - 1); }'
 assert 2 'int main() { int **p = alloc_ptr_ptr(2); return **p; }'
 
+assert 4 'int main() {int x; int *y; return sizeof(x);}'
+assert 8 'int main() {int x; int *y; return sizeof(y);}'
+assert 4 'int main() {int x; int *y; return sizeof(x + 3);}'
+assert 8 'int main() {int x; int *y; return sizeof(y + 3);}'
+assert 4 'int main() {int x; int *y; return sizeof(*y);}'
+assert 4 'int main() {int x; int *y; return sizeof(1);}'
+assert 4 'int main() {int x; int *y; return sizeof(sizeof(1));}'
+
 echo OK
 exit
 
