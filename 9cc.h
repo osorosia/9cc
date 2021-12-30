@@ -1,167 +1,160 @@
 #ifndef _9CC_H_
-# define _9CC_H_
+#define _9CC_H_
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <stdarg.h>
-# include <stdbool.h>
-# include <string.h>
-# include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <string.h>
+#include <ctype.h>
 
-typedef enum
-{
-	TK_RESERVED,
-	TK_IDENT,
-	TK_NUM,
-	TK_EOF,
-}	t_TokenKind;
+typedef enum {
+    TK_RESERVED,
+    TK_IDENT,
+    TK_NUM,
+    TK_EOF,
+}    t_TokenKind;
 
-typedef struct s_Token	t_Token;
-struct s_Token
-{
-	t_TokenKind	kind;
-	t_Token		*next;
-	int			val;
-	char		*str;
-	int			len;
+typedef struct s_Token  t_Token;
+struct s_Token {
+    t_TokenKind kind;
+    t_Token     *next;
+    int         val;
+    char        *str;
+    int         len;
 };
 
-typedef	enum
-{
-	ND_ADD,    // +
-	ND_SUB,    // -
-	ND_MUL,    // *
-	ND_DIV,    // /
-	ND_ADDR,   // unary &
-	ND_DEREF,  // unary *
-	ND_SIZEOF, // "sizeof"
-	ND_EQ,     // ==
-	ND_NE,     // !=
-	ND_LT,     // <
-	ND_LE,     // <=
-	ND_ASSIGN, // =
-	ND_RETURN, // "return"
-	ND_IF,     // "if"
-	ND_ELSE,   // "else"
-	ND_WHILE,  // "while"
-	ND_FOR,    // "for"
-	ND_LVAR,   // Variable
-	ND_CALL,   // call Function 
-	ND_ARGS,   // Arguments
-	ND_BLOCK,  // "{}"
-	ND_NUM,    // Number
-}	t_NodeKind;
+typedef    enum {
+    ND_ADD,    // +
+    ND_SUB,    // -
+    ND_MUL,    // *
+    ND_DIV,    // /
+    ND_ADDR,   // unary &
+    ND_DEREF,  // unary *
+    ND_SIZEOF, // "sizeof"
+    ND_EQ,     // ==
+    ND_NE,     // !=
+    ND_LT,     // <
+    ND_LE,     // <=
+    ND_ASSIGN, // =
+    ND_RETURN, // "return"
+    ND_IF,     // "if"
+    ND_ELSE,   // "else"
+    ND_WHILE,  // "while"
+    ND_FOR,    // "for"
+    ND_LVAR,   // Variable
+    ND_CALL,   // call Function 
+    ND_ARGS,   // Arguments
+    ND_BLOCK,  // "{}"
+    ND_NUM,    // Number
+}    t_NodeKind;
 
-typedef struct s_Node	t_Node;
-typedef struct s_Type	t_Type;
-typedef struct s_Obj	t_Obj;
+typedef struct s_Node   t_Node;
+typedef struct s_Type   t_Type;
+typedef struct s_Obj    t_Obj;
 
-struct	s_Node
-{
-	t_NodeKind	kind;
-	t_Node		*next; // next node
-	t_Node		*lhs;
-	t_Node		*rhs;
+struct  s_Node {
+    t_NodeKind  kind;
+    t_Node      *next; // next node
+    t_Node      *lhs;
+    t_Node      *rhs;
 
-	// "if" or "for" statement
-	t_Node		*init;
-	t_Node		*cond;
-	t_Node		*update;
-	t_Node		*then;
-	t_Node		*els;
+    // "if" or "for" statement
+    t_Node      *init;
+    t_Node      *cond;
+    t_Node      *update;
+    t_Node      *then;
+    t_Node      *els;
 
-	// Function call
-	t_Node		*args;
+    // Function call
+    t_Node      *args;
 
-	// Block or statement
-	t_Node		*body;
+    // Block or statement
+    t_Node      *body;
 
-	// Function or variable name and length
-	char		*name;
-	int			len;
+    // Function or variable name and length
+    char        *name;
+    int         len;
 
-	// Number
-	int			val;
+    // Number
+    int         val;
 
-	// Stack offset
-	int			offset;
-	
-	// Variable
-	t_Obj		*var;
-	t_Type		*ty;
+    // Stack offset
+    int         offset;
+    
+    // Variable
+    t_Obj       *var;
+    t_Type      *ty;
 };
 
-struct s_Obj
-{
-	t_Obj	*next;
-	char	*name;
-	int		len;
-	t_Token	*tok;
-	t_Type	*ty;
-	
-	// Local variable
-	int		offset;
+struct s_Obj {
+    t_Obj   *next;
+    char    *name;
+    int     len;
+    t_Token *tok;
+    t_Type  *ty;
+    
+    // Local variable
+    int     offset;
 
-	// Function
-	t_Obj	*locals;
-	t_Node	*body;
-	int		args_len;
+    // Function
+    t_Obj   *locals;
+    t_Node  *body;
+    int     args_len;
 };
 
-struct s_Type
-{
-	enum { INT, PTR, ARRAY }	ty;
-	t_Type						*ptr_to;
-	int							array_size;
+struct s_Type {
+    enum { INT, PTR, ARRAY }    ty;
+    t_Type                      *ptr_to;
+    int                         array_size;
 };
 
 //
 // tokenize.c
 //
-
-void	error(const char *fmt, ...);
-bool	at_eof(void);
-t_Token	*consume_token(t_TokenKind kind);
+void    error(const char *fmt, ...);
+bool    at_eof(void);
+t_Token *consume_token(t_TokenKind kind);
 t_Token *peek_token(t_TokenKind kind);
-int		expect_number(void);
-void	expect(char *op);	
-bool	peek(char *op, int len);
-bool	consume(char *op);
-t_Token	*tokenize(void);
+int     expect_number(void);
+void    expect(char *op);    
+bool    peek(char *op, int len);
+bool    consume(char *op);
+t_Token *tokenize(void);
 
 //
 // parse.c
 //
-
-void	program(void);
-t_Node	*stmt(void);
-t_Node	*expr(void);
-t_Node	*assign(void);
-t_Node	*equality(void);
-t_Node	*relational(void);
-t_Node	*add(void);
-t_Node	*mul(void);
-t_Node	*unary(void);
-t_Node	*primary(void);
+void    program(void);
+t_Node  *stmt(void);
+t_Node  *expr(void);
+t_Node  *assign(void);
+t_Node  *equality(void);
+t_Node  *relational(void);
+t_Node  *add(void);
+t_Node  *mul(void);
+t_Node  *unary(void);
+t_Node  *primary(void);
 
 //
 // codegen.c
 //
-
-void	gen(t_Node *node);
-void	gen_func_args(char *str, int offset);
+void    gen(t_Node *node);
+void    gen_func_args(char *str, int offset);
 
 //
 // utils.c
 //
+void    error(const char *fmt, ...);
+bool    startswith(char *p, char *q);
+bool    is_alnum(char c);
 
-void	error(const char *fmt, ...);
-bool	startswith(char *p, char *q);
-bool	is_alnum(char c);
-
-t_Token	*g_token;
-char	*user_input;
-t_Obj	*g_program;
-int		g_tag_num;
+// 
+// Gloval variable
+// 
+t_Token *g_token;
+char    *user_input;
+t_Obj   *g_program;
+int     g_tag_num;
 
 #endif
