@@ -17,7 +17,7 @@ t_Node *new_node_num(int val) {
     node = new_node(ND_NUM, NULL, NULL);
     node->val = val;
     ty = (t_Type *)calloc(1, sizeof(t_Type));
-    ty->ty = INT;
+    ty->kind = TY_INT;
     node->ty = ty;
     return (node);
 }
@@ -257,7 +257,7 @@ t_Node    *stmt() {
                 ty_prev = ty;
                 ty = (t_Type *)calloc(1, sizeof(t_Type));
                 ty->ptr_to = ty_prev;
-                ty->ty = ARRAY;
+                ty->kind = TY_ARRAY;
                 ty->array_size = expect_number();
                 expect("]");
             }
@@ -399,13 +399,13 @@ t_Type *typ() {
 
     ty = (t_Type *)calloc(1, sizeof(t_Type));
     expect("int");
-    ty->ty = INT;
+    ty->kind = TY_INT;
     ty->array_size = 1;
     while (consume("*")) {
         ty_prev = ty;
         ty = (t_Type *)calloc(1, sizeof(t_Type));
         ty->ptr_to = ty_prev;
-        ty->ty = PTR;
+        ty->kind = TY_PTR;
         ty->array_size = 1;
     }
     return (ty);

@@ -103,10 +103,16 @@ struct s_Obj {
     int     args_len;
 };
 
+typedef enum {
+    TY_INT,
+    TY_PTR,
+    TY_ARRAY,
+} t_TypeKind;
+
 struct s_Type {
-    enum { INT, PTR, ARRAY }    ty;
-    t_Type                      *ptr_to;
-    int                         array_size;
+    t_TypeKind  kind;
+    t_Type      *ptr_to;
+    int         array_size;
 };
 
 //

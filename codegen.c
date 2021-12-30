@@ -1,16 +1,16 @@
 #include "9cc.h"
 
 int size_of(t_Type *ty) {
-    if (ty->ty == INT)
+    if (ty->kind == TY_INT)
         return 4;
-    if (ty->ty == PTR)
+    if (ty->kind == TY_PTR)
         return 8;
     error("invalid type!");
 }
 
 void gen_lval(t_Node *node) {
-    if (node->ty && node->ty->ty == ARRAY)
-        node->ty->ty == PTR;
+    if (node->ty && node->ty->kind == TY_ARRAY)
+        node->ty->kind == TY_PTR;
     if (node->kind == ND_LVAR) {
         printf("    mov rax, rbp\n");
         printf("    sub rax, %d\n", node->offset);
@@ -60,7 +60,7 @@ void    gen(t_Node *node) {
     case ND_ADDR: {
         gen_lval(node->lhs);
         node->ty = (t_Type *)calloc(1, sizeof(t_Type));
-        node->ty->ty = PTR;
+        node->ty->kind = TY_PTR;
         node->ty->ptr_to = node->lhs->ty;
         return ;
     }
@@ -80,7 +80,7 @@ void    gen(t_Node *node) {
         printf("    mov rax, %d\n",size_of(node->lhs->ty));
         printf("    push rax\n");
         node->ty = (t_Type *)calloc(1, sizeof(t_Type));
-        node->ty->ty = INT;
+        node->ty->kind = TY_INT;
         return ;
     }
     case ND_ASSIGN: {
@@ -184,36 +184,36 @@ void    gen(t_Node *node) {
     printf("    pop rax\n");
     switch (node->kind) {
     case ND_ADD: {
-        if (node->lhs->ty->ty == PTR)
+        if (node->lhs->ty->kind == TY_PTR)
             printf("    imul rdi, %d\n", size_of(node->lhs->ty->ptr_to));
-        if (node->rhs->ty->ty == PTR)
+        if (node->rhs->ty->kind == TY_PTR)
             printf("    imul rax, %d\n", size_of(node->rhs->ty->ptr_to));
         printf("    add rax, rdi\n");
-        if (node->lhs->ty->ty == PTR)
+        if (node->lhs->ty->kind == TY_PTR)
             swap(&node->lhs, &node->rhs);
-        if (node->lhs->ty->ty == PTR)
+        if (node->lhs->ty->kind == TY_PTR)
             error("<pointer> + <pointer> is not defined!");
         node->ty = node->rhs->ty;
         break ;
     }
     case ND_SUB: {
-        if (node->lhs->ty->ty == PTR)
+        if (node->lhs->ty->kind == TY_PTR)
             printf("    imul rdi, %d\n", size_of(node->lhs->ty->ptr_to));
-        if (node->rhs->ty->ty == PTR)
+        if (node->rhs->ty->kind == TY_PTR)
             printf("    imul rax, %d\n", size_of(node->rhs->ty->ptr_to));
         printf("    sub rax, rdi\n");
-        if (node->lhs->ty->ty == PTR)
+        if (node->lhs->ty->kind == TY_PTR)
             swap(&node->lhs, &node->rhs);
-        if (node->lhs->ty->ty == PTR)
+        if (node->lhs->ty->kind == TY_PTR)
             error("<pointer> - <pointer> is not defined!");
         node->ty = node->rhs->ty;
         break ;
     }
     case ND_MUL: {
         printf("    imul rax, rdi\n");
-        if (node->lhs->ty->ty != PTR)
+        if (node->lhs->ty->kind != TY_PTR)
             swap(&node->lhs, &node->rhs);
-        if (node->lhs->ty->ty == PTR)
+        if (node->lhs->ty->kind == TY_PTR)
             error("<pointer> * <***> is not defined!");
         node->ty = node->lhs->ty;
         break ;
@@ -221,9 +221,9 @@ void    gen(t_Node *node) {
     case ND_DIV: {
         printf("    cqo\n");
         printf("    idiv rdi\n");
-        if (node->lhs->ty->ty != PTR)
+        if (node->lhs->ty->kind != TY_PTR)
             swap(&node->lhs, &node->rhs);
-        if (node->lhs->ty->ty == PTR)
+        if (node->lhs->ty->kind == TY_PTR)
             error("<pointer> / <***> is not defined!");
         node->ty = node->lhs->ty;
         break ;
@@ -233,7 +233,7 @@ void    gen(t_Node *node) {
         printf("    sete al\n");
         printf("    movzb rax, al\n");
         node->ty = (t_Type *)calloc(1, sizeof(t_Type));
-        node->ty->ty = INT;
+        node->ty->kind = TY_INT;
         break ;
     }
     case ND_NE: {
@@ -241,7 +241,7 @@ void    gen(t_Node *node) {
         printf("    setne al\n");
         printf("    movzb rax, al\n");
         node->ty = (t_Type *)calloc(1, sizeof(t_Type));
-        node->ty->ty = INT;
+        node->ty->kind = TY_INT;
         break ;
     }
     case ND_LT: {
@@ -249,7 +249,7 @@ void    gen(t_Node *node) {
         printf("    setl al\n");
         printf("    movzb rax, al\n");
         node->ty = (t_Type *)calloc(1, sizeof(t_Type));
-        node->ty->ty = INT;
+        node->ty->kind = TY_INT;
         break ;
     }
     case ND_LE: {
@@ -257,7 +257,7 @@ void    gen(t_Node *node) {
         printf("    setle al\n");
         printf("    movzb rax, al\n");
         node->ty = (t_Type *)calloc(1, sizeof(t_Type));
-        node->ty->ty = INT;
+        node->ty->kind = TY_INT;
         break ;
     }
     }
