@@ -194,55 +194,47 @@ void program() {
 //      | typ ident ("=" expr)? ";"
 //      | typ ident "[" num "]" ";"
 t_Node    *stmt() {
-    t_Node    *node;
-    t_Node    *node_init;
-    t_Node    *node_update;
-    t_Node    *node_cond;
-    t_Node    *node_then;
-    t_Node    *node_else;
-    t_Node    *node_body;
-    t_Node    head;
-    t_Token   *token;
-    t_Type    *ty;
-    t_Type    *ty_prev;
-
     // "{" stmt* "}"
     if (consume("{")) {
+        t_Node head;
         head.next = NULL;
-        node_body = &head;
+        t_Node *node_body = &head;
         while (!consume("}"))
             node_body = new_body(node_body, stmt());
-        node = new_node(ND_BLOCK, NULL, NULL);
+        t_Node *node = new_node(ND_BLOCK, NULL, NULL);
         node->next = head.next;
         return (node);
     }
+
     // "if" "(" expr ")" stmt ("else" stmt)?
     if (consume("if")) {
         expect("(");
-        node_cond = expr();
+        t_Node *node_cond = expr();
         expect(")");
-        node_then = stmt();
-        node_else = NULL;
+        t_Node *node_then = stmt();
+        t_Node *node_else = NULL;
         if (consume("else"))
             node_else = stmt();
-        node = new_node_if(ND_IF, node_cond, node_then, node_else);
+        t_Node *node = new_node_if(ND_IF, node_cond, node_then, node_else);
         return (node);
     }
+
     // "while" "(" expr ")" stmt
     if (consume("while")) {
         expect("(");
-        node_cond = expr();
+        t_Node *node_cond = expr();
         expect(")");
-        node_then = stmt();
-        node = new_node_while(ND_WHILE, node_cond, node_then);
+        t_Node *node_then = stmt();
+        t_Node *node = new_node_while(ND_WHILE, node_cond, node_then);
         return (node);
     }
+
     // "for" "(" expr? ";" expr? ";" expr? ")" stmt
     if (consume("for")) {
         expect("(");
-        node_init = NULL;
-        node_cond = NULL;
-        node_update = NULL;
+        t_Node *node_init = NULL;
+        t_Node *node_cond = NULL;
+        t_Node *node_update = NULL;
         if (!peek(";", 0))
             node_init = expr();
         expect(";");
@@ -252,37 +244,35 @@ t_Node    *stmt() {
         if (!peek(")", 0))
             node_update = expr();
         expect(")");
-        node_then = stmt();
-        node = new_node_for(node_init, node_cond, node_update, node_then);
+        t_Node *node_then = stmt();
+        t_Node *node = new_node_for(node_init, node_cond, node_update, node_then);
         return (node);
     }
+
     // "return" expr? ";"
     if (consume("return")) {
-        node = new_node(ND_RETURN, expr(), NULL);
+        t_Node *node = new_node(ND_RETURN, expr(), NULL);
         expect(";");
         return (node);
     }
+
     // typ ident ("=" expr)? ";"
     // typ ident "[" num "]" ";"
     if (peek("int", 0)) {
-        ty = typ();
-        token = peek_token(TK_IDENT);
+        t_Type *ty = typ();
+        t_Token *token = peek_token(TK_IDENT);
         if (!token)
             error("expected identifier!");
         if (find_lvar(token))
             error("redefinition of '%.*s'!\n", token->len, token->str);
-        node = NULL;
+        t_Node *node = NULL;
         if (peek("=", 1)) {
             new_node_ident(token, ty);
             node = expr();
         } else {
             consume_token(TK_IDENT);
             if (consume("[")) {
-                ty_prev = ty;
-                ty = (t_Type *)calloc(1, sizeof(t_Type));
-                ty->ptr_to = ty_prev;
-                ty->kind = TY_ARRAY;
-                ty->array_size = expect_number();
+                ty = new_type(TY_ARRAY, ty, expect_number());
                 expect("]");
             }
             new_node_ident(token, ty);
@@ -290,8 +280,9 @@ t_Node    *stmt() {
         expect(";");
         return (node);
     }
+    
     // expr ";"
-    node = expr();
+    t_Node *node = expr();
     expect(";");
     return (node);
 }
