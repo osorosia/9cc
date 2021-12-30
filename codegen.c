@@ -2,9 +2,9 @@
 
 int	size_of(t_Type *ty)
 {
-	if (ty->ptr_to->ty == INT)
+	if (ty->ty == INT)
 		return 4;
-	if (ty->ptr_to->ty == PTR)
+	if (ty->ty == PTR)
 		return 8;
 	error("invalid type!");
 }
@@ -81,8 +81,7 @@ void	gen(t_Node *node)
 	case ND_SIZEOF:
 		gen(node->lhs);
 		printf("\tpop rax\n");
-		printf("\tmov rax, %d\n", 4);
-		//printf("\tmov rax, %d\n",size_of(node->lhs->ty));
+		printf("\tmov rax, %d\n",size_of(node->lhs->ty));
 		printf("\tpush rax\n");
 		node->ty = (t_Type *)calloc(1, sizeof(t_Type));
 		node->ty->ty = INT;
@@ -189,9 +188,9 @@ void	gen(t_Node *node)
 	{
 	case ND_ADD:
 		if (node->lhs->ty->ty == PTR)
-			printf("\timul rdi, %d\n", size_of(node->lhs->ty));
+			printf("\timul rdi, %d\n", size_of(node->lhs->ty->ptr_to));
 		if (node->rhs->ty->ty == PTR)
-			printf("\timul rax, %d\n", size_of(node->rhs->ty));
+			printf("\timul rax, %d\n", size_of(node->rhs->ty->ptr_to));
 		printf("\tadd rax, rdi\n");
 		if (node->lhs->ty->ty == PTR)
 			swap(&node->lhs, &node->rhs);
@@ -201,9 +200,9 @@ void	gen(t_Node *node)
 		break ;
 	case ND_SUB:
 		if (node->lhs->ty->ty == PTR)
-			printf("\timul rdi, %d\n", size_of(node->lhs->ty));
+			printf("\timul rdi, %d\n", size_of(node->lhs->ty->ptr_to));
 		if (node->rhs->ty->ty == PTR)
-			printf("\timul rax, %d\n", size_of(node->rhs->ty));
+			printf("\timul rax, %d\n", size_of(node->rhs->ty->ptr_to));
 		printf("\tsub rax, rdi\n");
 		if (node->lhs->ty->ty == PTR)
 			swap(&node->lhs, &node->rhs);
