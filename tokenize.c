@@ -44,7 +44,7 @@ int	is_reserved(char *p)
 
 	static char	*kw[] = {
 		"return", "if", "else", "while", "for",
-		"int",
+		"int", "sizeof",
 	};
 	for (int i = 0; i < sizeof(kw) / sizeof(kw[0]); i++)
 	{
