@@ -369,16 +369,16 @@ t_Node *mul() {
 //       | ("*" | "&" | "sizeof") unary
 t_Node *unary() {
     if (consume("sizeof"))
-        return (new_node(ND_SIZEOF, unary(), NULL));
+        return new_node(ND_SIZEOF, unary(), NULL);
     if (consume("*"))
-        return (new_node(ND_DEREF, unary(), NULL));
+        return new_node(ND_DEREF, unary(), NULL);
     if (consume("&"))
-        return (new_node(ND_ADDR, unary(), NULL));
+        return new_node(ND_ADDR, unary(), NULL);
     if (consume("+"))
-        return (unary());
+        return unary();
     if (consume("-"))
-        return (new_node(ND_SUB, new_node_num(0), unary()));
-    return (primary());
+        return new_node(ND_SUB, new_node_num(0), unary());
+    return primary();
 }
 
 // primary = num
