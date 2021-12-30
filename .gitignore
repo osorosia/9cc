@@ -2,6 +2,7 @@
 **/.ssh/
 **/.vscode*/
 **/.cache/
+**/.lldb/
 
 **/.bash_history
 **/.viminfo
