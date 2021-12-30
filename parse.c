@@ -103,7 +103,7 @@ t_Node    *new_node_ident(t_Token *token, t_Type *ty) {
     return (node);
 }
 
-t_Node *new_node_call(t_Token *token) {
+t_Node *new_node_funcall(t_Token *token) {
     t_Node *node;
 
     node = (t_Node *)calloc(1, sizeof(t_Node));
@@ -399,8 +399,9 @@ t_Node *primary() {
     // (ident ( "(" (expr ( "," expr)*)? ")" )?
     token = consume_token(TK_IDENT);
     if (token) {
+        // Function call
         if (consume("(")) {
-            node = new_node_call(token);
+            node = new_node_funcall(token);
             if (consume(")"))
                 return node;
             args_head.args = NULL;
@@ -412,6 +413,7 @@ t_Node *primary() {
             node->args = args_head.args;
             return node;
         }
+        // Variable
         if (!find_lvar(token))
             error("'%.*s' undeclared!", token->len, token->str);
         return new_node_ident(token, NULL);
