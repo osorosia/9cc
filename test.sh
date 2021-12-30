@@ -131,20 +131,3 @@ assert 3 'int main() { int p[2]; *p = 3; *(p + 1) = 5; return *p; }'
 
 echo OK
 exit
-
-echo vvvvvv TODO vvvvvv
-assert 107 'int hoge(int a, int b);  int main() {int a = 1; a = 3; return hoge(a, 4);} int hoge(int a, int b){return a + b + 100;}'
-assert 107 ' int main() {int a = 1; a = 3; return hoge(a, 4);} int hoge(int a, int b){return a + b + 100;}' 
-# assert 3 'int main() {int a = 3; return a;}'
-assert 2 '
-int *f() {
-  int *p;
-  alloc4(&p, 1, 2, 4, 8);
-  return p;
-}
-int main() {
-  return *(f() + 1);
-}
-'
-
-exit
