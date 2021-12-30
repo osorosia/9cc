@@ -11,6 +11,8 @@ int	size_of(t_Type *ty)
 
 void	gen_lval(t_Node *node)
 {
+	if (node->ty && node->ty->ty == ARRAY)
+		node->ty->ty == PTR;
 	if (node->kind == ND_LVAR)
 	{	
 		printf("\tmov rax, rbp\n");
@@ -143,8 +145,8 @@ void	gen(t_Node *node)
 			printf("\tpop rax\n");
 			printf("\tcmp rax, 0\n");
 			printf("\tje .Lend%d\n", tag_num);
-		}
 		gen(node->then);
+		}
 		gen(node->update);
 		printf("\tjmp .Lbegin%d\n", tag_num);
 		printf(".Lend%d:\n", tag_num);

@@ -106,7 +106,7 @@ t_Node	*new_node_ident(t_Token *token, t_Type *ty)
 		lvar->next = g_program->locals;
 		lvar->name = token->str;
 		lvar->len = token->len;
-		lvar->offset = g_program->locals ? g_program->locals->offset + 8 : 8;
+		lvar->offset = g_program->locals ? g_program->locals->offset + 8 * ty->array_size : 8 * ty->array_size;
 		lvar->ty = ty;
 		node->offset = lvar->offset;
 		node->ty = ty;
@@ -208,6 +208,7 @@ t_Node	*stmt()
 	t_Node	head;
 	t_Token	*token;
 	t_Type	*ty;
+	t_Type	*ty_prev;
 
 	if (consume("{"))
 	{
@@ -273,12 +274,26 @@ t_Node	*stmt()
 			error("expected identifier!");
 		if (find_lvar(token))
 			error("redefinition of '%.*s'!\n", token->len, token->str);
-		new_node_ident(token, ty);
 		node = NULL;
 		if (peek("=", 1))
+		{
+			new_node_ident(token, ty);
 			node = expr();
-		else
+		}
+		else 
+		{
 			consume_token(TK_IDENT);
+			if (consume("["))
+			{
+				ty_prev = ty;
+				ty = (t_Type *)calloc(1, sizeof(t_Type));
+				ty->ptr_to = ty_prev;
+				ty->ty = ARRAY;
+				ty->array_size = expect_number();
+				expect("]");
+			}
+			new_node_ident(token, ty);
+		}
 		expect(";");
 		return (node);
 	}
@@ -432,12 +447,14 @@ t_Type	*typ()
 	ty = (t_Type *)calloc(1, sizeof(t_Type));
 	expect("int");
 	ty->ty = INT;
+	ty->array_size = 1;
 	while (consume("*"))
 	{
 		ty_prev = ty;
 		ty = (t_Type *)calloc(1, sizeof(t_Type));
 		ty->ptr_to = ty_prev;
 		ty->ty = PTR;
+		ty->array_size = 1;
 	}
 	return (ty);
 }
