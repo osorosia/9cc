@@ -86,6 +86,7 @@ void	gen(t_Node *node)
 		printf("\tpush rax\n");
 		node->ty = (t_Type *)calloc(1, sizeof(t_Type));
 		node->ty->ty = INT;
+		return ;
 	case ND_ASSIGN:
 		gen_lval(node->lhs);
 		gen(node->rhs);
