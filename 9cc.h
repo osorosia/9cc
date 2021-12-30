@@ -110,8 +110,9 @@ struct s_Obj
 
 struct s_Type
 {
-	enum { INT, PTR }	ty;
-	t_Type				*ptr_to;
+	enum { INT, PTR, ARRAY }	ty;
+	t_Type						*ptr_to;
+	int							array_size;
 };
 
 //
