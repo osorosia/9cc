@@ -61,8 +61,8 @@ assert 21 "int main() { return 5+20-4; }"
 assert 41 "int main() { return 12 + 34 - 5 ;}"
 assert 47 "int main() { return 5+6*7;}"
 assert 15 "int main() { return 5*(9-6);}"
-assert 4 "int main() { return (3+5)/2;}"
-assert 8 "int main() { return 3+3*2-1;}"
+assert 4  "int main() { return (3+5)/2;}"
+assert 8  "int main() { return 3+3*2-1;}"
 assert 18 "int main() { return 3+3*2-1+10;}"
 assert 10 "int main() { return -10+20;}"
 assert 10 "int main() { return --10;}"
@@ -97,14 +97,14 @@ assert_stdout 1,2,3,4,OK 'int main() { foo4(1,2,3,4); return 3; }'
 assert_stdout 1,2,3,4,5,OK 'int main() { foo5(1,2,3,4,5); return 3; }'
 assert_stdout 1,2,3,4,5,6,OK 'int main() { foo6(1,2,3,4,5,6); return 3; }'
 # Variable declaration and definition test
-assert 3 'int main() {int a = 3; return a;}'
-assert 3 'int main() {int a; a = 3; return a;}'
+assert 3 'int main() { int a = 3; return a;}'
+assert 3 'int main() { int a; a = 3; return a;}'
 # Function definition test
-assert 103 'int hoge(int a){return a + 100;}  int main() {return hoge(3);}'
-assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {return hoge(3, 4);}'
-assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {int a = 3;return hoge(a, 4);}'
-assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {int a = 3; int b = a + 1; return hoge(a, b);}'
-assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {int a = 1; a = 3; return hoge(a, 4);}'
+assert 103 'int hoge(int a) { return a + 100; } int main() {return hoge(3);}'
+assert 107 'int hoge(int a, int b) { return a + b + 100; }  int main() {int a = 3;return hoge(a, 4);}'
+assert 107 'int hoge(int a, int b) { return a + b + 100; }  int main() {int a = 3; int b = a + 1; return hoge(a, b);}'
+assert 107 'int hoge(int a, int b) { return a + b + 100; }  int main() {int a = 1; a = 3; return hoge(a, 4);}'
+assert 107 'int hoge(int a, int b) { return a + b + 100; }  int main() {return hoge(3, 4);}'
 assert 8 'int fibo(int i) { if (i <= 0){ return 0; } if (i <= 2) { return 1; } return fibo(i - 1) + fibo(i - 2); } int main() { return fibo(6); }'
 # unary '*' and '&' test
 assert 3 'int main() { int x; int *y; y = &x; *y = 3; return x; }'
