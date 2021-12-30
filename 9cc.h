@@ -55,7 +55,7 @@ typedef struct s_Obj    t_Obj;
 
 struct  s_Node {
     t_NodeKind  kind;
-    t_Node      *next; // next node
+    t_Node      *next;
     t_Node      *lhs;
     t_Node      *rhs;
 
@@ -132,15 +132,6 @@ t_Token *tokenize(void);
 // parse.c
 //
 void    program(void);
-t_Node  *stmt(void);
-t_Node  *expr(void);
-t_Node  *assign(void);
-t_Node  *equality(void);
-t_Node  *relational(void);
-t_Node  *add(void);
-t_Node  *mul(void);
-t_Node  *unary(void);
-t_Node  *primary(void);
 
 //
 // codegen.c
