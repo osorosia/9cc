@@ -402,7 +402,7 @@ t_Node *primary() {
         if (consume("(")) {
             node = new_node_call(token);
             if (consume(")"))
-                return (node);
+                return node;
             args_head.args = NULL;
             args = &args_head;
             args = new_node_args(args, expr());
@@ -410,7 +410,7 @@ t_Node *primary() {
                 args = new_node_args(args, expr());
             expect(")");
             node->args = args_head.args;
-            return (node);
+            return node;
         }
         if (!find_lvar(token))
             error("'%.*s' undeclared!", token->len, token->str);
