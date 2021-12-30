@@ -34,6 +34,7 @@ typedef	enum
 	ND_DIV,    // /
 	ND_ADDR,   // unary &
 	ND_DEREF,  // unary *
+	ND_SIZEOF, // "sizeof"
 	ND_EQ,     // ==
 	ND_NE,     // !=
 	ND_LT,     // <
