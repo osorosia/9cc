@@ -203,7 +203,7 @@ t_Node    *stmt() {
             node_body = new_body(node_body, stmt());
         t_Node *node = new_node(ND_BLOCK, NULL, NULL);
         node->next = head.next;
-        return (node);
+        return node;
     }
 
     // "if" "(" expr ")" stmt ("else" stmt)?
@@ -216,7 +216,7 @@ t_Node    *stmt() {
         if (consume("else"))
             node_else = stmt();
         t_Node *node = new_node_if(ND_IF, node_cond, node_then, node_else);
-        return (node);
+        return node;
     }
 
     // "while" "(" expr ")" stmt
@@ -226,7 +226,7 @@ t_Node    *stmt() {
         expect(")");
         t_Node *node_then = stmt();
         t_Node *node = new_node_while(ND_WHILE, node_cond, node_then);
-        return (node);
+        return node;
     }
 
     // "for" "(" expr? ";" expr? ";" expr? ")" stmt
@@ -246,14 +246,14 @@ t_Node    *stmt() {
         expect(")");
         t_Node *node_then = stmt();
         t_Node *node = new_node_for(node_init, node_cond, node_update, node_then);
-        return (node);
+        return node;
     }
 
     // "return" expr? ";"
     if (consume("return")) {
         t_Node *node = new_node(ND_RETURN, expr(), NULL);
         expect(";");
-        return (node);
+        return node;
     }
 
     // typ ident ("=" expr)? ";"
@@ -278,13 +278,13 @@ t_Node    *stmt() {
             new_node_ident(token, ty);
         }
         expect(";");
-        return (node);
+        return node;
     }
-    
+
     // expr ";"
     t_Node *node = expr();
     expect(";");
-    return (node);
+    return node;
 }
 
 // expr = assign
@@ -294,9 +294,8 @@ t_Node *expr() {
 
 // assign = equality ("=" assign)?
 t_Node *assign() {
-    t_Node *node;
+    t_Node *node = equality();
 
-    node = equality();
     if (consume("="))
         node = new_node(ND_ASSIGN, node, assign());
     return node;
@@ -304,24 +303,23 @@ t_Node *assign() {
 
 // equality = relational ("==" relational | "!=" relational)*
 t_Node *equality() {
-    t_Node *node;
+    t_Node *node = relational();
 
-    node = relational();
     for (;;) {
         if (consume("=="))
             node = new_node(ND_EQ, node, relational());
         else if (consume("!="))
             node = new_node(ND_NE, node, relational());
         else
-            return (node);
+            break;
     }
+    return node;
 }
 
 // relational = add ("<" add | "<=" add | ">" add | ">=" add)*
 t_Node *relational() {
-    t_Node *node;
-
-    node = add();
+    t_Node *node = add();
+    
     for (;;) {
         if (consume("<"))
             node = new_node(ND_LT, node, add());
@@ -332,38 +330,39 @@ t_Node *relational() {
         else if (consume(">="))
             node = new_node(ND_LE, add(), node);
         else
-            return (node);
+            break;
     }
+    return node;
 }
 
 // add = mul ("+" mul | "-" mul)*
 t_Node *add() {
-    t_Node *node;
+    t_Node *node = mul();
 
-    node = mul();
     for (;;) {
         if (consume("+"))
             node = new_node(ND_ADD, node, mul());
         else if (consume("-"))
             node = new_node(ND_SUB, node, mul());
         else
-            return (node);
+            break;
     }
+    return node;
 }
 
 // mul = unary ("*" unary | "/" unary)*
 t_Node *mul() {
-    t_Node *node;
+    t_Node *node = unary();
 
-    node = unary();
     for (;;) {
         if (consume("*"))
             node = new_node(ND_MUL, node, unary());
         else if (consume("/"))
             node = new_node(ND_DIV, node, unary());
         else
-            return (node);
+            break;
     }
+    return node;
 }
 
 // unary = ("+" | "-")? primary
