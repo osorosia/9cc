@@ -78,6 +78,14 @@ void	gen(t_Node *node)
 		if (!node->ty)
 			error("not pointer!");
 		return ;
+	case ND_SIZEOF:
+		gen(node->lhs);
+		printf("\tpop rax\n");
+		printf("\tmov rax, %d\n", 4);
+		//printf("\tmov rax, %d\n",size_of(node->lhs->ty));
+		printf("\tpush rax\n");
+		node->ty = (t_Type *)calloc(1, sizeof(t_Type));
+		node->ty->ty = INT;
 	case ND_ASSIGN:
 		gen_lval(node->lhs);
 		gen(node->rhs);
@@ -223,21 +231,29 @@ void	gen(t_Node *node)
 		printf("\tcmp rax, rdi\n");
 		printf("\tsete al\n");
 		printf("\tmovzb rax, al\n");
+		node->ty = (t_Type *)calloc(1, sizeof(t_Type));
+		node->ty->ty = INT;
 		break ;
 	case ND_NE:
 		printf("\tcmp rax, rdi\n");
 		printf("\tsetne al\n");
 		printf("\tmovzb rax, al\n");
+		node->ty = (t_Type *)calloc(1, sizeof(t_Type));
+		node->ty->ty = INT;
 		break ;
 	case ND_LT:
 		printf("\tcmp rax, rdi\n");
 		printf("\tsetl al\n");
 		printf("\tmovzb rax, al\n");
+		node->ty = (t_Type *)calloc(1, sizeof(t_Type));
+		node->ty->ty = INT;
 		break ;
 	case ND_LE:
 		printf("\tcmp rax, rdi\n");
 		printf("\tsetle al\n");
 		printf("\tmovzb rax, al\n");
+		node->ty = (t_Type *)calloc(1, sizeof(t_Type));
+		node->ty->ty = INT;
 		break ;
 	}
 	printf("\tpush rax\n");
