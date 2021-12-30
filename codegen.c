@@ -74,9 +74,9 @@ void	gen(t_Node *node)
 		printf("\tpop rax\n");
 		printf("\tmov rax, [rax]\n");
 		printf("\tpush rax\n");
-		if (node->ty->ty != PTR)
-			error("not pointer!");
 		node->ty = node->lhs->ty->ptr_to;
+		if (!node->ty)
+			error("not pointer!");
 		return ;
 	case ND_ASSIGN:
 		gen_lval(node->lhs);
