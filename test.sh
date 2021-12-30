@@ -63,77 +63,26 @@ assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {return hoge
 assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {int a = 3;return hoge(a, 4);}'
 assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {int a = 3; int b = a + 1; return hoge(a, b);}'
 assert 107 'int hoge(int a, int b){return a + b + 100;}  int main() {int a = 1; a = 3; return hoge(a, 4);}'
-assert 3 '
-int main() {
-  int x;
-  int *y;
-  y = &x;
-  *y = 3;
-  return x;
-}'
-
-assert 8 '
-int fibo(int i)
-{
-	if (i <= 0)
-	{
-		return 0;
-	} 
-	if (i <= 2) 
-	{
-		return 1;
-	} 
-	return fibo(i - 1) + fibo(i - 2);
-}
-int main() 
-{ 
-	return fibo(6); 
-}'
-
-assert 4 '
-int main() {
-  int *p;
-  alloc4(&p, 1, 2, 4, 8);
-  int *q;
-  q = p + 2;
-  return *q;
-}
-'
-
-assert 2 '
-int main() {
-  int *p;
-  alloc4(&p, 1, 2, 4, 8);
-  return *(p + 1);
-}
-'
-
+assert 3 'int main() { int x; int *y; y = &x; *y = 3; return x; }'
+assert 8 'int fibo(int i) { if (i <= 0){ return 0; } if (i <= 2) { return 1; } return fibo(i - 1) + fibo(i - 2); } int main() { return fibo(6); }'
+assert 4 'int main() { int *p; alloc4(&p, 1, 2, 4, 8); int *q; q = p + 2; return *q; }'
+assert 2 'int main() { int *p; alloc4(&p, 1, 2, 4, 8); return *(p + 1); }'
 assert 8 'int main() { int *p = alloc1(3, 5); return *p + *(p + 1); }'
 assert 9 'int main() { int *p = alloc2(2, 7); return *p + *(p - 1); }'
 assert 2 'int main() { int **p = alloc_ptr_ptr(2); return **p; }'
-
-assert 4 'int main() {int x; int *y; return sizeof(x);}'
-assert 8 'int main() {int x; int *y; return sizeof(y);}'
-assert 4 'int main() {int x; int *y; return sizeof(x + 3);}'
-assert 8 'int main() {int x; int *y; return sizeof(y + 3);}'
-assert 4 'int main() {int x; int *y; return sizeof(*y);}'
-assert 4 'int main() {int x; int *y; return sizeof(1);}'
-assert 4 'int main() {int x; int *y; return sizeof(sizeof(1));}'
-
-assert 4 'int main() {int x; int *y; return sizeof x;}'
-assert 8 'int main() {int x; int *y; return sizeof y;}'
-assert 4 'int main() {int x; int *y; return sizeof *y;}'
-assert 4 'int main() {int x; int *y; return sizeof 1;}'
-assert 4 'int main() {int x; int *y; return sizeof sizeof(1);}'
-
-assert 3 '
-int main() {
-  int p[2];
-  *p = 3;
-  *(p + 1) = 5;
-  return *p;
-}
-'
+assert 4 'int main() { int x; int *y; return sizeof(x);}'
+assert 8 'int main() { int x; int *y; return sizeof(y);}'
+assert 4 'int main() { int x; int *y; return sizeof(x + 3);}'
+assert 8 'int main() { int x; int *y; return sizeof(y + 3);}'
+assert 4 'int main() { int x; int *y; return sizeof(*y);}'
+assert 4 'int main() { int x; int *y; return sizeof(1);}'
+assert 4 'int main() { int x; int *y; return sizeof(sizeof(1));}'
+assert 4 'int main() { int x; int *y; return sizeof x;}'
+assert 8 'int main() { int x; int *y; return sizeof y;}'
+assert 4 'int main() { int x; int *y; return sizeof *y;}'
+assert 4 'int main() { int x; int *y; return sizeof 1;}'
+assert 4 'int main() { int x; int *y; return sizeof sizeof(1);}'
+assert 3 'int main() { int p[2]; *p = 3; *(p + 1) = 5; return *p; }'
 
 echo OK
 exit
