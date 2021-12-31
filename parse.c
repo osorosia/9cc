@@ -119,6 +119,7 @@ t_Type *new_type(t_TypeKind kind, t_Type *ptr_to, int array_size) {
 }
 
 void    program();
+void    function_definition();
 t_Node  *stmt();
 t_Node  *expr();
 t_Node  *assign();
@@ -130,49 +131,51 @@ t_Node  *unary();
 t_Node  *primary();
 t_Type  *typ();
 
-// program = (typ ident "(" (typ ident( "," typ ident)*)? ")" "{" stmt "}")*
+// program = function_definition*
 void program() {
     t_Obj   head;
-    t_Token *token;
-    t_Node  *locals;
-    t_Type  *ty;
 
     head.next = NULL;
     g_program = &head;
     while (!at_eof()) {
-        g_program = new_obj_func(g_program);
+        function_definition();
+    }
+    g_program = head.next;    
+}
+
+// function_definition = typ ident "(" (typ ident( "," typ ident)*)? ")" "{" stmt "}"
+void function_definition() {
+    g_program = new_obj_func(g_program);
+    t_Type *ty = typ();
+    t_Token *token = consume_token(TK_IDENT);
+    if (!token)
+        error("expected identifier!");
+    g_program->name = token->str;
+    g_program->len = token->len;
+    g_program->ty = ty;
+    expect("(");
+    // (typ ident( "," typ ident)*)?
+    if (!peek(")", 0)) {
         ty = typ();
         token = consume_token(TK_IDENT);
         if (!token)
             error("expected identifier!");
-        g_program->name = token->str;
-        g_program->len = token->len;
-        g_program->ty = ty;
-        expect("(");
-        // (typ ident( "," typ ident)*)?
-        if (!peek(")", 0)) {
+        new_node_ident(token, ty);
+        g_program->args_len++;
+        while (consume(",")) {
             ty = typ();
             token = consume_token(TK_IDENT);
             if (!token)
                 error("expected identifier!");
             new_node_ident(token, ty);
             g_program->args_len++;
-            while (consume(",")) {
-                ty = typ();
-                token = consume_token(TK_IDENT);
-                if (!token)
-                    error("expected identifier!");
-                new_node_ident(token, ty);
-                g_program->args_len++;
-            }
         }
-        expect(")");
-        // "{" stmt "}"
-        if (!peek("{", 0))
-            error("expected '{' !");
-        g_program->body = stmt();
     }
-    g_program = head.next;    
+    expect(")");
+    // "{" stmt "}"
+    if (!peek("{", 0))
+        error("expected '{' !");
+    g_program->body = stmt();
 }
 
 // stmt = expr ";"

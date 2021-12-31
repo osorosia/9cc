@@ -2,7 +2,8 @@
 
 ## EBNF
 ```ebnf
-program     = (typ ident "(" (typ ident( "," typ ident)*)? ")" "{" stmt "}")*
+program     = func_definition*
+function_definition = typ ident "(" (typ ident( "," typ ident)*)? ")" "{" stmt "}"
 stmt        = expr ";"
             | "{" stmt* "}"
             | "if" "(" expr ")" stmt ("else" stmt)?
