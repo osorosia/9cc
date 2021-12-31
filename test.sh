@@ -135,4 +135,11 @@ assert 4 'int main() { int x; int *y; return sizeof sizeof(1);}'
 assert 3 'int main() { int p[2]; *p = 3; *(p + 1) = 5; return *p; }'
 
 echo OK
+
+echo ------ TODO ------
+
+assert 5 'int main() { int p[10]; *p = 3; *(p + 1) = 5; return *(p + 1); }'
+
+echo TODO OK
+
 exit
