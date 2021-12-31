@@ -17,11 +17,11 @@ void gen_lval(t_Node *node) {
         printf("    mov rax, rbp\n");
         printf("    sub rax, %d\n", node->offset);
         printf("    push rax\n");
-        return ;
+        return;
     }
     if (node->kind == ND_DEREF) {
         gen(node->lhs);
-        return ;
+        return;
     }
     error("not an lvalue");
 }
@@ -46,25 +46,25 @@ void    gen(t_Node *node) {
     int     args_count;
 
     if (!node)
-        return ;
+        return;
     switch (node->kind) {
     case ND_NUM: {
         printf("    push %d\n", node->val);
-        return ;
+        return;
     }
     case ND_LVAR: {
         gen_lval(node);
         printf("    pop rax\n");
         printf("    mov rax, [rax]\n");
         printf("    push rax\n");
-        return ;
+        return;
     }
     case ND_ADDR: {
         gen_lval(node->lhs);
         node->ty = (t_Type *)calloc(1, sizeof(t_Type));
         node->ty->kind = TY_PTR;
         node->ty->ptr_to = node->lhs->ty;
-        return ;
+        return;
     }
     case ND_DEREF: {
         gen(node->lhs);
@@ -74,7 +74,7 @@ void    gen(t_Node *node) {
         node->ty = node->lhs->ty->ptr_to;
         if (!node->ty)
             error("not pointer!");
-        return ;
+        return;
     }
     case ND_SIZEOF: {
         gen(node->lhs);
@@ -83,7 +83,7 @@ void    gen(t_Node *node) {
         printf("    push rax\n");
         node->ty = (t_Type *)calloc(1, sizeof(t_Type));
         node->ty->kind = TY_INT;
-        return ;
+        return;
     }
     case ND_ASSIGN: {
         gen_lval(node->lhs);
@@ -92,7 +92,7 @@ void    gen(t_Node *node) {
         printf("    pop rax\n");
         printf("    mov [rax], rdi\n");
         printf("    push rdi\n");
-        return ;
+        return;
     }
     case ND_RETURN: {
         gen(node->lhs);
@@ -100,7 +100,7 @@ void    gen(t_Node *node) {
         printf("    mov rsp, rbp\n");
         printf("    pop rbp\n");
         printf("    ret\n");
-        return ;
+        return;
     }
     case ND_IF: {
         tag_num = g_tag_num;
@@ -119,7 +119,7 @@ void    gen(t_Node *node) {
             gen(node->els);
         }
         printf(".Lend%d:\n", tag_num);
-        return ;
+        return;
     }
     case ND_WHILE: {
         tag_num = g_tag_num++;
@@ -131,7 +131,7 @@ void    gen(t_Node *node) {
         gen(node->then);
         printf("    jmp .Lbegin%d\n", tag_num);
         printf(".Lend%d:\n", tag_num);
-        return ;
+        return;
     }
     case ND_FOR: {
         tag_num = g_tag_num++;
@@ -147,7 +147,7 @@ void    gen(t_Node *node) {
         gen(node->update);
         printf("    jmp .Lbegin%d\n", tag_num);
         printf(".Lend%d:\n", tag_num);
-        return ;
+        return;
     }
     case ND_BLOCK: {
         block = node->next; 
@@ -156,7 +156,7 @@ void    gen(t_Node *node) {
             block = block->next;
             printf("    pop rax\n");
         }
-        return ;
+        return;
     }
     case ND_CALL: {
         args = node->args;
@@ -164,7 +164,7 @@ void    gen(t_Node *node) {
         while (args) {
             args_count++;
             if (args_count > 6)
-                break ;
+                break;
             gen(args->lhs);
             printf("    pop rax\n");
             if (args_count == 1) printf("    mov rdi, rax\n");
@@ -177,7 +177,7 @@ void    gen(t_Node *node) {
         }
         printf("    call %.*s\n", node->len, node->name);
         printf("    push rax\n");
-        return ;
+        return;
     }
     }
     gen(node->lhs);
@@ -196,7 +196,7 @@ void    gen(t_Node *node) {
         if (node->lhs->ty->kind == TY_PTR)
             error("<pointer> + <pointer> is not defined!");
         node->ty = node->rhs->ty;
-        break ;
+        break;
     }
     case ND_SUB: {
         if (node->lhs->ty->kind == TY_PTR)
@@ -209,7 +209,7 @@ void    gen(t_Node *node) {
         if (node->lhs->ty->kind == TY_PTR)
             error("<pointer> - <pointer> is not defined!");
         node->ty = node->rhs->ty;
-        break ;
+        break;
     }
     case ND_MUL: {
         printf("    imul rax, rdi\n");
@@ -218,7 +218,7 @@ void    gen(t_Node *node) {
         if (node->lhs->ty->kind == TY_PTR)
             error("<pointer> * <***> is not defined!");
         node->ty = node->lhs->ty;
-        break ;
+        break;
     }
     case ND_DIV: {
         printf("    cqo\n");
@@ -228,7 +228,7 @@ void    gen(t_Node *node) {
         if (node->lhs->ty->kind == TY_PTR)
             error("<pointer> / <***> is not defined!");
         node->ty = node->lhs->ty;
-        break ;
+        break;
     }
     case ND_EQ: {
         printf("    cmp rax, rdi\n");
@@ -236,7 +236,7 @@ void    gen(t_Node *node) {
         printf("    movzb rax, al\n");
         node->ty = (t_Type *)calloc(1, sizeof(t_Type));
         node->ty->kind = TY_INT;
-        break ;
+        break;
     }
     case ND_NE: {
         printf("    cmp rax, rdi\n");
@@ -244,7 +244,7 @@ void    gen(t_Node *node) {
         printf("    movzb rax, al\n");
         node->ty = (t_Type *)calloc(1, sizeof(t_Type));
         node->ty->kind = TY_INT;
-        break ;
+        break;
     }
     case ND_LT: {
         printf("    cmp rax, rdi\n");
@@ -252,7 +252,7 @@ void    gen(t_Node *node) {
         printf("    movzb rax, al\n");
         node->ty = (t_Type *)calloc(1, sizeof(t_Type));
         node->ty->kind = TY_INT;
-        break ;
+        break;
     }
     case ND_LE: {
         printf("    cmp rax, rdi\n");
@@ -260,7 +260,7 @@ void    gen(t_Node *node) {
         printf("    movzb rax, al\n");
         node->ty = (t_Type *)calloc(1, sizeof(t_Type));
         node->ty->kind = TY_INT;
-        break ;
+        break;
     }
     }
     printf("    push rax\n");
