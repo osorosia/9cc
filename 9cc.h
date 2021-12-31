@@ -139,6 +139,8 @@ void    program(void);
 //
 void    gen(t_Node *node);
 void    gen_func_args(char *str, int offset);
+void    gen_func_prologue(t_Obj *function);
+void    gen_func_epilogue();
 
 //
 // utils.c
@@ -146,6 +148,7 @@ void    gen_func_args(char *str, int offset);
 void    error(const char *fmt, ...);
 bool    startswith(char *p, char *q);
 bool    is_alnum(char c);
+void    swap(t_Node **l, t_Node **r);
 
 // 
 // Gloval variable

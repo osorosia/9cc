@@ -22,3 +22,8 @@ bool is_alnum(char c) {
             || (c == '_');
 }
 
+void swap(t_Node **l, t_Node **r) {
+    t_Node *tmp = *l;
+    *l = *r;
+    *r = tmp;
+}

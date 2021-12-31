@@ -32,10 +32,28 @@ void gen_func_args(char *str, int offset) {
     printf("    mov [rax], %s\n", str);
 }
 
-void swap(t_Node **l, t_Node **r) {
-    t_Node *tmp = *l;
-    *l = *r;
-    *r = tmp;
+void gen_func_prologue(t_Obj *function) {
+    printf("%.*s:\n", function->len, function->name);
+    printf("    push rbp\n");
+    printf("    mov rbp, rsp\n");
+    printf("    sub rsp, %d\n", function->locals ? function->locals->offset : 0);
+    if (function->locals != NULL && function->locals->offset % 16 != 0)
+        printf("    sub rsp, 0x18\n");
+    else
+        printf("    sub rsp, 0x10\n");
+    if (function->args_len >= 1) gen_func_args("rdi", 8);
+    if (function->args_len >= 2) gen_func_args("rsi", 8 * 2);
+    if (function->args_len >= 3) gen_func_args("rdx", 8 * 3);
+    if (function->args_len >= 4) gen_func_args("rcx", 8 * 4);
+    if (function->args_len >= 5) gen_func_args("r8", 8 * 5);
+    if (function->args_len >= 6) gen_func_args("r9", 8 * 6);
+}
+
+void gen_func_epilogue() {
+    printf("    pop rax\n");
+    printf("    mov rsp, rbp\n");
+    printf("    pop rbp\n");
+    printf("    ret\n");
 }
 
 void    gen(t_Node *node) {
