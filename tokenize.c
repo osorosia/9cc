@@ -15,19 +15,17 @@ void error_at(char *loc, char *fmt, ...) {
 }
 
 int expect_number(void) {
-    int val;
+    t_Token *cur = g_token;
 
     if (g_token->kind != TK_NUM)
         error_at(g_token->str, "Not numeric!");
-    val = g_token->val;
     g_token = g_token->next;
-    return val;
+    return cur->val;
 }
 
 t_Token *new_token(t_TokenKind kind, t_Token *cur, char *str, int len) {
-    t_Token *next;
+    t_Token *next = (t_Token *)calloc(1, sizeof(t_Token));
 
-    next = (t_Token *)calloc(1, sizeof(t_Token));
     next->kind = kind;
     next->str = str;
     next->len = len;
@@ -101,22 +99,18 @@ bool at_eof(void) {
 }
 
 t_Token *consume_token(t_TokenKind kind) {
-    t_Token *cur_token;
+    t_Token *cur = g_token;
 
     if (g_token->kind != kind)
         return NULL;
-    cur_token = g_token;
     g_token = g_token->next;
-    return cur_token;
+    return cur;
 }
 
 t_Token *peek_token(t_TokenKind kind) {
-    t_Token *cur_token;
-
     if (g_token->kind != kind)
         return NULL;
-    cur_token = g_token;
-    return cur_token;
+    return g_token;
 }
 
 bool consume(char *op) {
@@ -129,14 +123,13 @@ bool consume(char *op) {
 }
 
 bool peek(char *op, int len) {
-    t_Token *token;
+    t_Token *tok = g_token;
 
-    token = g_token;
-    while (len-- && token->kind != TK_EOF)
-        token = token->next;
-    if (token->kind != TK_RESERVED
-            || token->len != strlen(op)
-            || memcmp(token->str, op, token->len))
+    while (len-- && tok->kind != TK_EOF)
+        tok = tok->next;
+    if (tok->kind != TK_RESERVED
+            || tok->len != strlen(op)
+            || memcmp(tok->str, op, tok->len))
         return false;
     return true;
 }
