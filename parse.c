@@ -257,7 +257,7 @@ t_Node    *stmt() {
         if (!token)
             error("expected identifier!");
         if (find_lvar(token))
-            error("redefinition of '%.*s'!\n", token->len, token->str);
+            error("redefinition of '%.*s'!", token->len, token->str);
         t_Node *node = NULL;
         if (peek("=", 1)) {
             new_node_ident(token, ty);
