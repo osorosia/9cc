@@ -36,14 +36,12 @@ t_Token *new_token(t_TokenKind kind, t_Token *cur, char *str, int len) {
 }
 
 int is_reserved(char *p) {
-    int len;
-
     static char *kw[] = {
         "return", "if", "else", "while", "for",
         "int", "sizeof",
     };
     for (int i = 0; i < sizeof(kw) / sizeof(kw[0]); i++) {
-        len = strlen(kw[i]);
+        int len = strlen(kw[i]);
         if (startswith(p, kw[i]) && !is_alnum(p[len]))
             return len;
     }
