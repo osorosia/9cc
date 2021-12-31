@@ -204,8 +204,7 @@ t_Node    *stmt() {
         t_Node *node_else = NULL;
         if (consume("else"))
             node_else = stmt();
-        t_Node *node = new_node_if(ND_IF, node_cond, node_then, node_else);
-        return node;
+        return new_node_if(ND_IF, node_cond, node_then, node_else);
     }
 
     // "while" "(" expr ")" stmt
@@ -214,8 +213,7 @@ t_Node    *stmt() {
         t_Node *node_cond = expr();
         expect(")");
         t_Node *node_then = stmt();
-        t_Node *node = new_node_while(ND_WHILE, node_cond, node_then);
-        return node;
+        return new_node_while(ND_WHILE, node_cond, node_then);
     }
 
     // "for" "(" expr? ";" expr? ";" expr? ")" stmt
@@ -234,8 +232,7 @@ t_Node    *stmt() {
             node_update = expr();
         expect(")");
         t_Node *node_then = stmt();
-        t_Node *node = new_node_for(node_init, node_cond, node_update, node_then);
-        return node;
+        return new_node_for(node_init, node_cond, node_update, node_then);
     }
 
     // "return" expr? ";"
@@ -374,27 +371,23 @@ t_Node *unary() {
 //         | (ident ( "(" (expr ( "," expr)*)? ")" )?
 //         | "(" expr ")"
 t_Node *primary() {
-    t_Node    *node;
-    t_Token   *token;
-    t_Node    *args;
-    t_Node    args_head;
-
     // "(" expr ")"
     if (consume("(")) {
-        node = expr();
+        t_Node *node = expr();
         expect(")");
         return node;
     }
     // (ident ( "(" (expr ( "," expr)*)? ")" )?
-    token = consume_token(TK_IDENT);
+    t_Token *token = consume_token(TK_IDENT);
     if (token) {
         // Function call
         if (consume("(")) {
-            node = new_node_funcall(token);
+            t_Node *node = new_node_funcall(token);
             if (consume(")"))
                 return node;
+            t_Node args_head;
             args_head.args = NULL;
-            args = &args_head;
+            t_Node *args = &args_head;
             args = new_node_args(args, expr());
             while (consume(","))
                 args = new_node_args(args, expr());
