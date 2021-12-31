@@ -149,6 +149,7 @@ void program() {
         g_program->len = token->len;
         g_program->ty = ty;
         expect("(");
+        // (typ ident( "," typ ident)*)?
         if (!peek(")", 0)) {
             ty = typ();
             token = consume_token(TK_IDENT);
@@ -166,6 +167,7 @@ void program() {
             }
         }
         expect(")");
+        // "{" stmt "}"
         if (!peek("{", 0))
             error("expected '{' !");
         g_program->body = stmt();
