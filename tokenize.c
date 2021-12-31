@@ -50,14 +50,10 @@ int is_reserved(char *p) {
 
 t_Token *tokenize(void) {
     t_Token head;
-    t_Token *cur; 
-    char *p;
-    char *q;
-    int  len;
+    t_Token *cur = &head;
+    char *p = user_input;
 
     head.next = NULL;
-    cur = &head;
-    p = user_input;
     while (*p) {
         if (isspace(*p)) {
             p++;
@@ -73,7 +69,7 @@ t_Token *tokenize(void) {
             cur = new_token(TK_RESERVED, cur, p++, 1);
             continue ;
         }
-        len = is_reserved(p);
+        int len = is_reserved(p);
         if (len > 0) {
              cur = new_token(TK_RESERVED, cur, p, len);
              p += len;
@@ -81,7 +77,7 @@ t_Token *tokenize(void) {
         }
         if (isdigit(*p)) {
             cur = new_token(TK_NUM, cur, p, 0);
-            q = p;
+            char *q = p;
             cur->val = strtol(p, &p, 10);
             cur->len = p - q;
             continue ;
