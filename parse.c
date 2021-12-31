@@ -1,39 +1,33 @@
 #include "9cc.h"
 
 t_Node *new_node(t_NodeKind    kind, t_Node *lhs, t_Node *rhs) {
-    t_Node  *node;
+    t_Node  *node = calloc(1, sizeof(t_Node));
 
-    node = calloc(1, sizeof(t_Node));
     node->kind = kind;
     node->lhs = lhs;
     node->rhs = rhs;
-    return (node);
+    return node;
 }
 
 t_Node *new_node_num(int val) {
-    t_Node  *node;
-    t_Type  *ty;
+    t_Node *node = new_node(ND_NUM, NULL, NULL);
 
-    node = new_node(ND_NUM, NULL, NULL);
     node->val = val;
-    ty = (t_Type *)calloc(1, sizeof(t_Type));
-    ty->kind = TY_INT;
-    node->ty = ty;
-    return (node);
+    node->ty = (t_Type *)calloc(1, sizeof(t_Type));
+    node->ty->kind = TY_INT;
+    return node;
 }
 
 t_Obj *new_obj_func(t_Obj *cur) {
-    t_Obj *next;
+    t_Obj *next = (t_Obj *)calloc(1, sizeof(t_Obj));
 
-    next = (t_Obj *)calloc(1, sizeof(t_Obj));
     cur->next = next;
-    return (next);
+    return next;
 }
 
 t_Node *new_node_if(t_NodeKind kind, t_Node *cond, t_Node *then, t_Node *els) {
-    t_Node *node;
+    t_Node *node = new_node(kind, NULL, NULL);
 
-    node = new_node(kind, NULL, NULL);
     node->cond = cond;
     node->then = then;
     node->els = els;
@@ -41,50 +35,45 @@ t_Node *new_node_if(t_NodeKind kind, t_Node *cond, t_Node *then, t_Node *els) {
 }
 
 t_Node *new_node_while(t_NodeKind kind, t_Node *cond, t_Node *then) {
-    t_Node *node;
+    t_Node *node = new_node(kind, NULL, NULL);
 
-    node = new_node(kind, NULL, NULL);
     node->cond = cond;
     node->then = then;
-    return (node);
+    return node;
 }
 
 t_Node *new_node_for(t_Node *init, t_Node *cond, t_Node *update, t_Node *then) {
-    t_Node *node;
+    t_Node *node = new_node(ND_FOR, NULL, NULL);
 
-    node = new_node(ND_FOR, NULL, NULL);
     node->init = init;
     node->cond = cond;
     node->update = update;
     node->then = then;
-    return (node);
+    return node;
 }
 
-t_Node *new_body(t_Node *cur_body, t_Node *node) {
-    t_Node *next_body;
+t_Node *new_body(t_Node *cur, t_Node *node) {
+    t_Node *next = (t_Node *)calloc(1, sizeof(t_Node));
 
-    next_body = (t_Node *)calloc(1, sizeof(t_Node));
-    cur_body->next = next_body;
-    next_body->body = node;
-    return (next_body);
+    cur->next = next;
+    next->body = node; 
+    return next;
 }
 
 t_Obj *find_lvar(t_Token *token) {
     for (t_Obj *var = g_program->locals; var; var = var->next) {
         if (token->len == var->len 
-            && !memcmp(token->str, var->name, token->len))
-            return (var);
+                && !memcmp(token->str, var->name, token->len))
+            return var;
     }
-    return (NULL);
+    return NULL;
 }
 
 t_Node    *new_node_ident(t_Token *token, t_Type *ty) {
-    t_Node    *node;
-    t_Obj    *lvar;
+    t_Node *node = (t_Node *)calloc(1, sizeof(t_Node));
 
-    node = (t_Node *)calloc(1, sizeof(t_Node));
     node->kind = ND_LVAR;
-    lvar = find_lvar(token);
+    t_Obj *lvar = find_lvar(token);
     if (lvar) {
         node->offset = lvar->offset;
         node->ty = lvar->ty;
@@ -100,30 +89,29 @@ t_Node    *new_node_ident(t_Token *token, t_Type *ty) {
         g_program->locals = lvar;
     }
     node->var = lvar;
-    return (node);
+    return node;
 }
 
 t_Node *new_node_funcall(t_Token *token) {
-    t_Node *node;
+    t_Node *node = (t_Node *)calloc(1, sizeof(t_Node));
 
-    node = (t_Node *)calloc(1, sizeof(t_Node));
     node->kind = ND_CALL;
     node->name = token->str;
     node->len = token->len;
     node->ty = (t_Type *)calloc(1, sizeof(t_Type));
-    return (node);
+    return node;
 }
 
 t_Node *new_node_args(t_Node *args, t_Node *node) {
-    t_Node  *next;
+    t_Node  *next = new_node(ND_ARGS, node, NULL);
 
-    next = new_node(ND_ARGS, node, NULL);
     args->args = next;
-    return (next);
+    return next;
 }
 
 t_Type *new_type(t_TypeKind kind, t_Type *ptr_to, int array_size) {
     t_Type *ty = (t_Type *)calloc(1, sizeof(t_Type));
+
     ty->kind = kind;
     ty->ptr_to = ptr_to;
     ty->array_size = array_size;
