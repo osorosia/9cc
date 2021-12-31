@@ -10,11 +10,10 @@ int main(int argc, char **argv) {
 
     printf(".intel_syntax noprefix\n");
     printf(".globl main\n");
-    while (g_functions) {
-        gen_func_prologue(g_functions);
-        gen(g_functions->body);
+    for (t_Obj *func = g_functions; func; func = func->next) {
+        gen_func_prologue(func);
+        gen(func->body);
         gen_func_epilogue();
-        g_functions = g_functions->next;
     }
     return 0;
 }
