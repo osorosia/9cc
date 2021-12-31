@@ -32,5 +32,5 @@ int main(int argc, char **argv) {
         printf("    pop rbp\n");
         printf("    ret\n");
     }
-    return (0);
+    return 0;
 }

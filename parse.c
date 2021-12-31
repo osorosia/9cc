@@ -31,7 +31,7 @@ t_Node *new_node_if(t_NodeKind kind, t_Node *cond, t_Node *then, t_Node *els) {
     node->cond = cond;
     node->then = then;
     node->els = els;
-    return (node);
+    return node;
 }
 
 t_Node *new_node_while(t_NodeKind kind, t_Node *cond, t_Node *then) {
@@ -387,7 +387,7 @@ t_Node *primary() {
     if (consume("(")) {
         node = expr();
         expect(")");
-        return (node);
+        return node;
     }
     // (ident ( "(" (expr ( "," expr)*)? ")" )?
     token = consume_token(TK_IDENT);

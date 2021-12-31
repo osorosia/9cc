@@ -21,7 +21,7 @@ int expect_number(void) {
         error_at(g_token->str, "Not numeric!");
     val = g_token->val;
     g_token = g_token->next;
-    return (val);
+    return val;
 }
 
 t_Token *new_token(t_TokenKind kind, t_Token *cur, char *str, int len) {
@@ -32,7 +32,7 @@ t_Token *new_token(t_TokenKind kind, t_Token *cur, char *str, int len) {
     next->str = str;
     next->len = len;
     cur->next = next;
-    return (next);
+    return next;
 }
 
 int is_reserved(char *p) {
@@ -45,9 +45,9 @@ int is_reserved(char *p) {
     for (int i = 0; i < sizeof(kw) / sizeof(kw[0]); i++) {
         len = strlen(kw[i]);
         if (startswith(p, kw[i]) && !is_alnum(p[len]))
-            return (len);
+            return len;
     }
-    return (0);
+    return 0;
 }
 
 t_Token *tokenize(void) {
@@ -99,39 +99,39 @@ t_Token *tokenize(void) {
         error_at(p, "Invalid Token!");
     }
     new_token(TK_EOF, cur, p, 0);
-    return (head.next);
+    return head.next;
 }
 
 bool at_eof(void) {
-    return (g_token->kind == TK_EOF);
+    return g_token->kind == TK_EOF;
 }
 
 t_Token *consume_token(t_TokenKind kind) {
     t_Token *cur_token;
 
     if (g_token->kind != kind)
-        return (NULL);
+        return NULL;
     cur_token = g_token;
     g_token = g_token->next;
-    return (cur_token);
+    return cur_token;
 }
 
 t_Token *peek_token(t_TokenKind kind) {
     t_Token *cur_token;
 
     if (g_token->kind != kind)
-        return (NULL);
+        return NULL;
     cur_token = g_token;
-    return (cur_token);
+    return cur_token;
 }
 
 bool consume(char *op) {
     if (g_token->kind != TK_RESERVED
             || g_token->len != strlen(op)
             || memcmp(g_token->str, op, g_token->len))
-        return (false);
+        return false;
     g_token = g_token->next;
-    return (true);
+    return true;
 }
 
 bool peek(char *op, int len) {
@@ -143,8 +143,8 @@ bool peek(char *op, int len) {
     if (token->kind != TK_RESERVED
             || token->len != strlen(op)
             || memcmp(token->str, op, token->len))
-        return (false);
-    return (true);
+        return false;
+    return true;
 }
 
 void expect(char *op) {
