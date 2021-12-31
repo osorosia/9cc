@@ -68,6 +68,7 @@ assert 10 "int main() { return -10+20;}"
 assert 10 "int main() { return --10;}"
 assert 10 "int main() { return - -10;}"
 assert 10 "int main() { return - - +10;}"
+assert 100 "int main() {{{{ return 100; }}}}"
 # Comparison test
 assert 0 "int main() { return 0==1; }"
 assert 1 "int main() { return 42==42; }"
@@ -86,6 +87,10 @@ assert 1 "int main() { return 1>=0; }"
 assert 1 "int main() { return 1>=1; }"
 assert 0 "int main() { return 1>=2; }"
 assert 0 "int main() { return 1==1!=1; }"
+# "for", "while", "if", "else"
+assert 10 "int main() { int a = 0; while (a < 10) {a = a + 1;} return a; }"
+assert 10 "int main() { int a = 100; for (a = 0; a < 10; a = a + 1) {3;} return a; }"
+assert 10 "int main() { int a = 10; if (a < 10) return 9; else if (a > 10) return 11; else return 10; }"
 # Function call test
 assert_stdout OK 'int main() { foo(); return 1; }'
 assert_stdout OK 'int main() { foo(); return 2; }'
