@@ -107,6 +107,15 @@ t_Token *consume_token(t_TokenKind kind) {
     return cur;
 }
 
+t_Token *expect_token(t_TokenKind kind) {
+    t_Token *cur = g_token;
+
+    if (g_token->kind != kind)
+        error("Not expected token!");
+    g_token = g_token->next;
+    return cur;
+}
+
 t_Token *peek_token(t_TokenKind kind) {
     if (g_token->kind != kind)
         return NULL;

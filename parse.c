@@ -148,9 +148,7 @@ void program() {
 void function_definition() {
     g_functions = new_obj_func(g_functions);
     t_Type *ty = typ();
-    t_Token *token = consume_token(TK_IDENT);
-    if (!token)
-        error("expected identifier!");
+    t_Token *token = expect_token(TK_IDENT);
     g_functions->name = token->str;
     g_functions->len = token->len;
     g_functions->ty = ty;
@@ -171,9 +169,7 @@ void function_definition() {
 // arg = typ ident
 void arg() {
     t_Type  *ty = typ();
-    t_Token *token = consume_token(TK_IDENT);
-    if (!token)
-        error("expected identifier!");
+    t_Token *token = expect_token(TK_IDENT);
     new_node_ident(token, ty);
     g_functions->args_len++;
 }
@@ -263,7 +259,7 @@ t_Node    *stmt() {
             new_node_ident(token, ty);
             node = expr();
         } else {
-            consume_token(TK_IDENT);
+            expect_token(TK_IDENT);
             if (consume("[")) {
                 ty = new_type(TY_ARRAY, ty, expect_number());
                 expect("]");

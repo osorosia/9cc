@@ -121,6 +121,7 @@ struct s_Type {
 void    error(const char *fmt, ...);
 bool    at_eof(void);
 t_Token *consume_token(t_TokenKind kind);
+t_Token *expect_token(t_TokenKind kind);
 t_Token *peek_token(t_TokenKind kind);
 int     expect_number(void);
 void    expect(char *op);    
