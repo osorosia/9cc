@@ -120,6 +120,7 @@ t_Type *new_type(t_TypeKind kind, t_Type *ptr_to, int array_size) {
 
 void    program();
 void    function_definition();
+void    arg();
 t_Node  *stmt();
 t_Node  *expr();
 t_Node  *assign();
@@ -143,7 +144,7 @@ void program() {
     g_program = head.next;    
 }
 
-// function_definition = typ ident "(" (typ ident( "," typ ident)*)? ")" "{" stmt "}"
+// function_definition = typ ident "(" (arg ("," arg)*)? ")" "{" stmt "}"
 void function_definition() {
     g_program = new_obj_func(g_program);
     t_Type *ty = typ();
@@ -154,28 +155,27 @@ void function_definition() {
     g_program->len = token->len;
     g_program->ty = ty;
     expect("(");
-    // (typ ident( "," typ ident)*)?
+    // (arg ("," arg)*)?
     if (!peek(")", 0)) {
-        ty = typ();
-        token = consume_token(TK_IDENT);
-        if (!token)
-            error("expected identifier!");
-        new_node_ident(token, ty);
-        g_program->args_len++;
-        while (consume(",")) {
-            ty = typ();
-            token = consume_token(TK_IDENT);
-            if (!token)
-                error("expected identifier!");
-            new_node_ident(token, ty);
-            g_program->args_len++;
-        }
+        arg();
+        while (consume(","))
+            arg();
     }
     expect(")");
     // "{" stmt "}"
     if (!peek("{", 0))
         error("expected '{' !");
     g_program->body = stmt();
+}
+
+// arg = typ ident
+void arg() {
+    t_Type  *ty = typ();
+    t_Token *token = consume_token(TK_IDENT);
+    if (!token)
+        error("expected identifier!");
+    new_node_ident(token, ty);
+    g_program->args_len++;
 }
 
 // stmt = expr ";"
