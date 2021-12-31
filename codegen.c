@@ -1,5 +1,7 @@
 #include "9cc.h"
 
+int g_tag_num;
+
 int size_of(t_Type *ty) {
     if (ty->kind == TY_INT)
         return 4;
