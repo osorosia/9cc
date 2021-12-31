@@ -151,6 +151,6 @@ bool    is_alnum(char c);
 // 
 t_Token *g_token;
 char    *user_input;
-t_Obj   *g_program;
+t_Obj   *g_functions;
 
 #endif

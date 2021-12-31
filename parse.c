@@ -61,7 +61,7 @@ t_Node *new_body(t_Node *cur, t_Node *node) {
 }
 
 t_Obj *find_lvar(t_Token *token) {
-    for (t_Obj *var = g_program->locals; var; var = var->next) {
+    for (t_Obj *var = g_functions->locals; var; var = var->next) {
         if (token->len == var->len 
                 && !memcmp(token->str, var->name, token->len))
             return var;
@@ -79,14 +79,14 @@ t_Node    *new_node_ident(t_Token *token, t_Type *ty) {
         node->ty = lvar->ty;
     } else {
         lvar = (t_Obj *)calloc(1, sizeof(t_Obj));
-        lvar->next = g_program->locals;
+        lvar->next = g_functions->locals;
         lvar->name = token->str;
         lvar->len = token->len;
-        lvar->offset = g_program->locals ? g_program->locals->offset + 8 * ty->array_size : 8 * ty->array_size;
+        lvar->offset = g_functions->locals ? g_functions->locals->offset + 8 * ty->array_size : 8 * ty->array_size;
         lvar->ty = ty;
         node->offset = lvar->offset;
         node->ty = ty;
-        g_program->locals = lvar;
+        g_functions->locals = lvar;
     }
     node->var = lvar;
     return node;
@@ -137,23 +137,23 @@ void program() {
     t_Obj   head;
 
     head.next = NULL;
-    g_program = &head;
+    g_functions = &head;
     while (!at_eof()) {
         function_definition();
     }
-    g_program = head.next;    
+    g_functions = head.next;    
 }
 
 // function_definition = typ ident "(" (arg ("," arg)*)? ")" "{" stmt "}"
 void function_definition() {
-    g_program = new_obj_func(g_program);
+    g_functions = new_obj_func(g_functions);
     t_Type *ty = typ();
     t_Token *token = consume_token(TK_IDENT);
     if (!token)
         error("expected identifier!");
-    g_program->name = token->str;
-    g_program->len = token->len;
-    g_program->ty = ty;
+    g_functions->name = token->str;
+    g_functions->len = token->len;
+    g_functions->ty = ty;
     expect("(");
     // (arg ("," arg)*)?
     if (!peek(")", 0)) {
@@ -165,7 +165,7 @@ void function_definition() {
     // "{" stmt "}"
     if (!peek("{", 0))
         error("expected '{' !");
-    g_program->body = stmt();
+    g_functions->body = stmt();
 }
 
 // arg = typ ident
@@ -175,7 +175,7 @@ void arg() {
     if (!token)
         error("expected identifier!");
     new_node_ident(token, ty);
-    g_program->args_len++;
+    g_functions->args_len++;
 }
 
 // stmt = expr ";"

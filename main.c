@@ -10,23 +10,23 @@ int main(int argc, char **argv) {
 
     printf(".intel_syntax noprefix\n");
     printf(".globl main\n");
-    while (g_program) {
-        printf("%.*s:\n", g_program->len, g_program->name);
+    while (g_functions) {
+        printf("%.*s:\n", g_functions->len, g_functions->name);
         printf("    push rbp\n");
         printf("    mov rbp, rsp\n");
-        printf("    sub rsp, %d\n", g_program->locals ? g_program->locals->offset : 0);
-        if (g_program->locals != NULL && g_program->locals->offset % 16 != 0)
+        printf("    sub rsp, %d\n", g_functions->locals ? g_functions->locals->offset : 0);
+        if (g_functions->locals != NULL && g_functions->locals->offset % 16 != 0)
             printf("    sub rsp, 0x18\n");
         else
             printf("    sub rsp, 0x10\n");
-        if (g_program->args_len >= 1) gen_func_args("rdi", 8);
-        if (g_program->args_len >= 2) gen_func_args("rsi", 8 * 2);
-        if (g_program->args_len >= 3) gen_func_args("rdx", 8 * 3);
-        if (g_program->args_len >= 4) gen_func_args("rcx", 8 * 4);
-        if (g_program->args_len >= 5) gen_func_args("r8", 8 * 5);
-        if (g_program->args_len >= 6) gen_func_args("r9", 8 * 6);
-        gen(g_program->body);
-        g_program = g_program->next;
+        if (g_functions->args_len >= 1) gen_func_args("rdi", 8);
+        if (g_functions->args_len >= 2) gen_func_args("rsi", 8 * 2);
+        if (g_functions->args_len >= 3) gen_func_args("rdx", 8 * 3);
+        if (g_functions->args_len >= 4) gen_func_args("rcx", 8 * 4);
+        if (g_functions->args_len >= 5) gen_func_args("r8", 8 * 5);
+        if (g_functions->args_len >= 6) gen_func_args("r9", 8 * 6);
+        gen(g_functions->body);
+        g_functions = g_functions->next;
         printf("    pop rax\n");
         printf("    mov rsp, rbp\n");
         printf("    pop rbp\n");
